@@ -1,1 +1,460 @@
-{"courses":[{"id":"ES","name":"Estrategia de Segmentación","hours":16,"mode":"Presencial","professor":"Pilar Bermúdez Núñez","summary":"Diseña estrategias de segmentación con análisis de datos, targeting y posicionamiento para crear propuestas de valor diferenciadas.","evaluation":"Participación 10% · Evaluación escrita 20% · Simulador 40% · Avances 10% · Trabajo final 20%","sessions":["02 oct · Marco STP y criterios B2C/B2B","16 oct · Insights, JTBD y análisis de datos","30 oct · Selección de segmentos y simulador","13 nov · Propuesta de valor, posicionamiento e IA"],"cases":["All Nutrition (B): Quantitative Research for Market Segmentation","Marketing Simulation: Managing Segments and Customers","Trabajo integrador final"]},{"id":"DEC","name":"Dirección Estratégica Corporativa","hours":16,"mode":"Presencial","professor":"Álvaro Alberto López Derpich","summary":"Formula estrategias corporativas a partir del entorno, capacidades organizacionales y oportunidades de generación de valor.","evaluation":"Examen final 60% · Trabajo grupal 40% (todas las sesiones)","sessions":["01 oct · Entorno e industria","03 oct · Capacidades y ventaja competitiva","29 oct · Aspiraciones y estrategia corporativa","12 nov · Ejecución y examen final"],"cases":["Lululemon Athletica","Knowledge Lab: Moving Towards a Digital Model","Juan Valdez: Taking Colombian Coffee Global","PMI’s Smoke-Free Vision"]},{"id":"GV","name":"Gerencia de Ventas","hours":12,"mode":"Presencial","professor":"Heli Jonathan Farfan Saldarriaga","summary":"Gestiona equipos de ventas, modelos de cobertura, desempeño e incentivos orientados al crecimiento rentable.","evaluation":"Participación 30% · Controles de lectura 30% · Trabajo grupal 40%","sessions":["03 oct · Ventas en la estrategia","17 oct · Diseño de fuerzas de ventas","31 oct · Desempeño y liderazgo"],"cases":["Cabot Pharmaceuticals","Hausser Food Products","Salesforce en Latinoamérica","Juztina: incentivos, control y decisiones comerciales"]},{"id":"DEX","name":"Diagnóstico de la Experiencia de Cliente","hours":20,"mode":"Remoto","professor":"Jorge Cervera Castillo · ESIC","summary":"","evaluation":"","sessions":[],"cases":[]},{"id":"KAM","name":"Key Account Management & B2B","hours":12,"mode":"Presencial","professor":"Hugo Antonio Rodriguez Barba","summary":"","evaluation":"","sessions":[],"cases":[]},{"id":"EC","name":"E-Commerce","hours":16,"mode":"Presencial","professor":"Oscar Barriga Gallarday","summary":"","evaluation":"","sessions":[],"cases":[]},{"id":"MA","name":"Marketing Automation","hours":20,"mode":"Remoto","professor":"Salvador Vilalta Blanco · ESIC","summary":"","evaluation":"","sessions":[],"cases":[]},{"id":"BIAD","name":"Business Intelligence y Analítica Digital","hours":20,"mode":"Presencial","professor":"Juan Manuel Casanova Gonzalez","summary":"","evaluation":"","sessions":[],"cases":[]}],"events":[{"id":"DEC-2026-10-01","date":"2026-10-01","course":"DEC","title":"Dirección Estratégica Corporativa","type":"clase","time":"18:30–22:30"},{"id":"DEC-2026-10-03","date":"2026-10-03","course":"DEC","title":"Dirección Estratégica Corporativa","type":"clase","time":"14:00–18:00"},{"id":"DEC-2026-10-29","date":"2026-10-29","course":"DEC","title":"Dirección Estratégica Corporativa","type":"clase","time":"18:30–22:30"},{"id":"DEC-2026-11-12","date":"2026-11-12","course":"DEC","title":"Dirección Estratégica Corporativa","type":"clase","time":"18:30–22:30"},{"id":"ES-2026-10-02","date":"2026-10-02","course":"ES","title":"Estrategia de Segmentación","type":"clase","time":"18:30–22:30"},{"id":"ES-2026-10-16","date":"2026-10-16","course":"ES","title":"Estrategia de Segmentación","type":"clase","time":"18:30–22:30"},{"id":"ES-2026-10-30","date":"2026-10-30","course":"ES","title":"Estrategia de Segmentación","type":"clase","time":"18:30–22:30"},{"id":"ES-2026-11-13","date":"2026-11-13","course":"ES","title":"Estrategia de Segmentación","type":"clase","time":"18:30–22:30"},{"id":"GV-2026-10-03","date":"2026-10-03","course":"GV","title":"Gerencia de Ventas","type":"clase","time":"09:00–13:00"},{"id":"KAM-2026-10-15","date":"2026-10-15","course":"KAM","title":"Key Account Management & B2B","type":"clase","time":"18:30–22:30"},{"id":"GV-2026-10-17","date":"2026-10-17","course":"GV","title":"Gerencia de Ventas","type":"clase","time":"09:00–13:00"},{"id":"KAM-2026-10-17","date":"2026-10-17","course":"KAM","title":"Key Account Management & B2B","type":"clase","time":"14:00–18:00"},{"id":"GV-2026-10-31","date":"2026-10-31","course":"GV","title":"Gerencia de Ventas","type":"clase","time":"09:00–13:00"},{"id":"KAM-2026-10-31","date":"2026-10-31","course":"KAM","title":"Key Account Management & B2B","type":"clase","time":"14:00–18:00"},{"id":"DEX-2026-11-14","date":"2026-11-14","course":"DEX","title":"Diagnóstico de la Experiencia de Cliente","type":"clase","time":"09:00–13:00"},{"id":"MA-2026-11-14","date":"2026-11-14","course":"MA","title":"Marketing Automation","type":"clase","time":"14:00–18:00"},{"id":"DEX-2026-11-28","date":"2026-11-28","course":"DEX","title":"Diagnóstico de la Experiencia de Cliente","type":"clase","time":"09:00–13:00"},{"id":"MA-2026-11-28","date":"2026-11-28","course":"MA","title":"Marketing Automation","type":"clase","time":"14:00–18:00"},{"id":"DEX-2026-12-12","date":"2026-12-12","course":"DEX","title":"Diagnóstico de la Experiencia de Cliente","type":"clase","time":"09:00–13:00"},{"id":"MA-2026-12-12","date":"2026-12-12","course":"MA","title":"Marketing Automation","type":"clase","time":"14:00–18:00"},{"id":"DEX-2027-01-09","date":"2027-01-09","course":"DEX","title":"Diagnóstico de la Experiencia de Cliente","type":"clase","time":"09:00–13:00"},{"id":"MA-2027-01-09","date":"2027-01-09","course":"MA","title":"Marketing Automation","type":"clase","time":"14:00–18:00"},{"id":"DEX-2027-01-23","date":"2027-01-23","course":"DEX","title":"Diagnóstico de la Experiencia de Cliente","type":"clase","time":"09:00–13:00"},{"id":"MA-2027-01-23","date":"2027-01-23","course":"MA","title":"Marketing Automation","type":"clase","time":"14:00–18:00"},{"id":"EC-2026-11-26","date":"2026-11-26","course":"EC","title":"E-Commerce","type":"clase","time":"18:30–22:30"},{"id":"EC-2026-12-10","date":"2026-12-10","course":"EC","title":"E-Commerce","type":"clase","time":"18:30–22:30"},{"id":"EC-2027-01-07","date":"2027-01-07","course":"EC","title":"E-Commerce","type":"clase","time":"18:30–22:30"},{"id":"EC-2027-01-21","date":"2027-01-21","course":"EC","title":"E-Commerce","type":"clase","time":"18:30–22:30"},{"id":"BIAD-2026-11-27","date":"2026-11-27","course":"BIAD","title":"Business Intelligence y Analítica Digital","type":"clase","time":"18:30–22:30"},{"id":"BIAD-2026-12-11","date":"2026-12-11","course":"BIAD","title":"Business Intelligence y Analítica Digital","type":"clase","time":"18:30–22:30"},{"id":"BIAD-2027-01-08","date":"2027-01-08","course":"BIAD","title":"Business Intelligence y Analítica Digital","type":"clase","time":"18:30–22:30"},{"id":"BIAD-2027-01-22","date":"2027-01-22","course":"BIAD","title":"Business Intelligence y Analítica Digital","type":"clase","time":"18:30–22:30"},{"id":"BIAD-2027-02-04","date":"2027-02-04","course":"BIAD","title":"Business Intelligence y Analítica Digital","type":"clase","time":"18:30–22:30"},{"id":"GV2026-10-17Control de lectura 1","date":"2026-10-17","course":"GV","title":"Control de lectura 1","type":"examen","time":"Durante la sesión"},{"id":"GV2026-10-31Control de lectura 2","date":"2026-10-31","course":"GV","title":"Control de lectura 2","type":"examen","time":"Durante la sesión"},{"id":"GV2026-10-31Trabajo grupal","date":"2026-10-31","course":"GV","title":"Trabajo grupal","type":"entrega","time":"Durante la sesión"},{"id":"DEC2026-11-12Examen final","date":"2026-11-12","course":"DEC","title":"Examen final","type":"examen","time":"Durante la sesión"},{"id":"ES2026-11-13Evaluación escrita","date":"2026-11-13","course":"ES","title":"Evaluación escrita","type":"examen","time":"Durante la sesión"},{"id":"ES2026-11-13Resultados del simulador","date":"2026-11-13","course":"ES","title":"Resultados del simulador","type":"entrega","time":"Durante la sesión"},{"id":"ES2026-11-13Trabajo integrador final","date":"2026-11-13","course":"ES","title":"Trabajo integrador final","type":"entrega","time":"Durante la sesión"},{"id":"ES2026-10-02Avance integrador 1","date":"2026-10-02","course":"ES","title":"Avance integrador 1","type":"entrega","time":"Durante la sesión"},{"id":"ES2026-10-16Avance integrador 2","date":"2026-10-16","course":"ES","title":"Avance integrador 2","type":"entrega","time":"Durante la sesión"}],"birthdays":[],"missingBirthdays":[]}
+{
+  "courses": [
+    {
+      "id": "ES",
+      "name": "Estrategia de Segmentación",
+      "hours": 16,
+      "mode": "Presencial",
+      "professor": "Pilar Bermúdez Núñez",
+      "summary": "Diseña estrategias de segmentación con análisis de datos, targeting y posicionamiento para crear propuestas de valor diferenciadas.",
+      "evaluation": "Participación 10% · Evaluación escrita 20% · Simulador 40% · Avances 10% · Trabajo final 20%",
+      "sessions": [
+        "02 oct · Marco STP y criterios B2C/B2B",
+        "16 oct · Insights, JTBD y análisis de datos",
+        "30 oct · Selección de segmentos y simulador",
+        "13 nov · Propuesta de valor, posicionamiento e IA"
+      ],
+      "cases": [
+        "All Nutrition (B): Quantitative Research for Market Segmentation",
+        "Marketing Simulation: Managing Segments and Customers",
+        "Trabajo integrador final"
+      ]
+    },
+    {
+      "id": "DEC",
+      "name": "Dirección Estratégica Corporativa",
+      "hours": 16,
+      "mode": "Presencial",
+      "professor": "Álvaro Alberto López Derpich",
+      "summary": "Formula estrategias corporativas a partir del entorno, capacidades organizacionales y oportunidades de generación de valor.",
+      "evaluation": "Examen final 60% · Trabajo grupal 40% (todas las sesiones)",
+      "sessions": [
+        "01 oct · Entorno e industria",
+        "03 oct · Capacidades y ventaja competitiva",
+        "29 oct · Aspiraciones y estrategia corporativa",
+        "12 nov · Ejecución y examen final"
+      ],
+      "cases": [
+        "Lululemon Athletica",
+        "Knowledge Lab: Moving Towards a Digital Model",
+        "Juan Valdez: Taking Colombian Coffee Global",
+        "PMI’s Smoke-Free Vision"
+      ]
+    },
+    {
+      "id": "GV",
+      "name": "Gerencia de Ventas",
+      "hours": 12,
+      "mode": "Presencial",
+      "professor": "Heli Jonathan Farfan Saldarriaga",
+      "summary": "Gestiona equipos de ventas, modelos de cobertura, desempeño e incentivos orientados al crecimiento rentable.",
+      "evaluation": "Participación 30% · Controles de lectura 30% · Trabajo grupal 40%",
+      "sessions": [
+        "03 oct · Ventas en la estrategia",
+        "17 oct · Diseño de fuerzas de ventas",
+        "31 oct · Desempeño y liderazgo"
+      ],
+      "cases": [
+        "Cabot Pharmaceuticals",
+        "Hausser Food Products",
+        "Salesforce en Latinoamérica",
+        "Juztina: incentivos, control y decisiones comerciales"
+      ]
+    },
+    {
+      "id": "DEX",
+      "name": "Diagnóstico de la Experiencia de Cliente",
+      "hours": 20,
+      "mode": "Remoto",
+      "professor": "Jorge Cervera Castillo · ESIC",
+      "summary": "",
+      "evaluation": "",
+      "sessions": [],
+      "cases": []
+    },
+    {
+      "id": "KAM",
+      "name": "Key Account Management & B2B",
+      "hours": 12,
+      "mode": "Presencial",
+      "professor": "Hugo Antonio Rodriguez Barba",
+      "summary": "",
+      "evaluation": "",
+      "sessions": [],
+      "cases": []
+    },
+    {
+      "id": "EC",
+      "name": "E-Commerce",
+      "hours": 16,
+      "mode": "Presencial",
+      "professor": "Oscar Barriga Gallarday",
+      "summary": "",
+      "evaluation": "",
+      "sessions": [],
+      "cases": []
+    },
+    {
+      "id": "MA",
+      "name": "Marketing Automation",
+      "hours": 20,
+      "mode": "Remoto",
+      "professor": "Salvador Vilalta Blanco · ESIC",
+      "summary": "",
+      "evaluation": "",
+      "sessions": [],
+      "cases": []
+    },
+    {
+      "id": "BIAD",
+      "name": "Business Intelligence y Analítica Digital",
+      "hours": 20,
+      "mode": "Presencial",
+      "professor": "Juan Manuel Casanova Gonzalez",
+      "summary": "",
+      "evaluation": "",
+      "sessions": [],
+      "cases": []
+    }
+  ],
+  "events": [
+    {
+      "id": "DEC-2026-10-01",
+      "date": "2026-10-01",
+      "course": "DEC",
+      "title": "Dirección Estratégica Corporativa",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "DEC-2026-10-03",
+      "date": "2026-10-03",
+      "course": "DEC",
+      "title": "Dirección Estratégica Corporativa",
+      "type": "clase",
+      "time": "14:00–18:00"
+    },
+    {
+      "id": "DEC-2026-10-29",
+      "date": "2026-10-29",
+      "course": "DEC",
+      "title": "Dirección Estratégica Corporativa",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "DEC-2026-11-12",
+      "date": "2026-11-12",
+      "course": "DEC",
+      "title": "Dirección Estratégica Corporativa",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "ES-2026-10-02",
+      "date": "2026-10-02",
+      "course": "ES",
+      "title": "Estrategia de Segmentación",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "ES-2026-10-16",
+      "date": "2026-10-16",
+      "course": "ES",
+      "title": "Estrategia de Segmentación",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "ES-2026-10-30",
+      "date": "2026-10-30",
+      "course": "ES",
+      "title": "Estrategia de Segmentación",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "ES-2026-11-13",
+      "date": "2026-11-13",
+      "course": "ES",
+      "title": "Estrategia de Segmentación",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "GV-2026-10-03",
+      "date": "2026-10-03",
+      "course": "GV",
+      "title": "Gerencia de Ventas",
+      "type": "clase",
+      "time": "09:00–13:00"
+    },
+    {
+      "id": "KAM-2026-10-15",
+      "date": "2026-10-15",
+      "course": "KAM",
+      "title": "Key Account Management & B2B",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "GV-2026-10-17",
+      "date": "2026-10-17",
+      "course": "GV",
+      "title": "Gerencia de Ventas",
+      "type": "clase",
+      "time": "09:00–13:00"
+    },
+    {
+      "id": "KAM-2026-10-17",
+      "date": "2026-10-17",
+      "course": "KAM",
+      "title": "Key Account Management & B2B",
+      "type": "clase",
+      "time": "14:00–18:00"
+    },
+    {
+      "id": "GV-2026-10-31",
+      "date": "2026-10-31",
+      "course": "GV",
+      "title": "Gerencia de Ventas",
+      "type": "clase",
+      "time": "09:00–13:00"
+    },
+    {
+      "id": "KAM-2026-10-31",
+      "date": "2026-10-31",
+      "course": "KAM",
+      "title": "Key Account Management & B2B",
+      "type": "clase",
+      "time": "14:00–18:00"
+    },
+    {
+      "id": "DEX-2026-11-14",
+      "date": "2026-11-14",
+      "course": "DEX",
+      "title": "Diagnóstico de la Experiencia de Cliente",
+      "type": "clase",
+      "time": "09:00–13:00"
+    },
+    {
+      "id": "MA-2026-11-14",
+      "date": "2026-11-14",
+      "course": "MA",
+      "title": "Marketing Automation",
+      "type": "clase",
+      "time": "14:00–18:00"
+    },
+    {
+      "id": "DEX-2026-11-28",
+      "date": "2026-11-28",
+      "course": "DEX",
+      "title": "Diagnóstico de la Experiencia de Cliente",
+      "type": "clase",
+      "time": "09:00–13:00"
+    },
+    {
+      "id": "MA-2026-11-28",
+      "date": "2026-11-28",
+      "course": "MA",
+      "title": "Marketing Automation",
+      "type": "clase",
+      "time": "14:00–18:00"
+    },
+    {
+      "id": "DEX-2026-12-12",
+      "date": "2026-12-12",
+      "course": "DEX",
+      "title": "Diagnóstico de la Experiencia de Cliente",
+      "type": "clase",
+      "time": "09:00–13:00"
+    },
+    {
+      "id": "MA-2026-12-12",
+      "date": "2026-12-12",
+      "course": "MA",
+      "title": "Marketing Automation",
+      "type": "clase",
+      "time": "14:00–18:00"
+    },
+    {
+      "id": "DEX-2027-01-09",
+      "date": "2027-01-09",
+      "course": "DEX",
+      "title": "Diagnóstico de la Experiencia de Cliente",
+      "type": "clase",
+      "time": "09:00–13:00"
+    },
+    {
+      "id": "MA-2027-01-09",
+      "date": "2027-01-09",
+      "course": "MA",
+      "title": "Marketing Automation",
+      "type": "clase",
+      "time": "14:00–18:00"
+    },
+    {
+      "id": "DEX-2027-01-23",
+      "date": "2027-01-23",
+      "course": "DEX",
+      "title": "Diagnóstico de la Experiencia de Cliente",
+      "type": "clase",
+      "time": "09:00–13:00"
+    },
+    {
+      "id": "MA-2027-01-23",
+      "date": "2027-01-23",
+      "course": "MA",
+      "title": "Marketing Automation",
+      "type": "clase",
+      "time": "14:00–18:00"
+    },
+    {
+      "id": "EC-2026-11-26",
+      "date": "2026-11-26",
+      "course": "EC",
+      "title": "E-Commerce",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "EC-2026-12-10",
+      "date": "2026-12-10",
+      "course": "EC",
+      "title": "E-Commerce",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "EC-2027-01-07",
+      "date": "2027-01-07",
+      "course": "EC",
+      "title": "E-Commerce",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "EC-2027-01-21",
+      "date": "2027-01-21",
+      "course": "EC",
+      "title": "E-Commerce",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "BIAD-2026-11-27",
+      "date": "2026-11-27",
+      "course": "BIAD",
+      "title": "Business Intelligence y Analítica Digital",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "BIAD-2026-12-11",
+      "date": "2026-12-11",
+      "course": "BIAD",
+      "title": "Business Intelligence y Analítica Digital",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "BIAD-2027-01-08",
+      "date": "2027-01-08",
+      "course": "BIAD",
+      "title": "Business Intelligence y Analítica Digital",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "BIAD-2027-01-22",
+      "date": "2027-01-22",
+      "course": "BIAD",
+      "title": "Business Intelligence y Analítica Digital",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "BIAD-2027-02-04",
+      "date": "2027-02-04",
+      "course": "BIAD",
+      "title": "Business Intelligence y Analítica Digital",
+      "type": "clase",
+      "time": "18:30–22:30"
+    },
+    {
+      "id": "GV2026-10-17Control de lectura 1",
+      "date": "2026-10-17",
+      "course": "GV",
+      "title": "Control de lectura 1",
+      "type": "examen",
+      "time": "Durante la sesión"
+    },
+    {
+      "id": "GV2026-10-31Control de lectura 2",
+      "date": "2026-10-31",
+      "course": "GV",
+      "title": "Control de lectura 2",
+      "type": "examen",
+      "time": "Durante la sesión"
+    },
+    {
+      "id": "GV2026-10-31Trabajo grupal",
+      "date": "2026-10-31",
+      "course": "GV",
+      "title": "Trabajo grupal",
+      "type": "entrega",
+      "time": "Durante la sesión"
+    },
+    {
+      "id": "DEC2026-11-12Examen final",
+      "date": "2026-11-12",
+      "course": "DEC",
+      "title": "Examen final",
+      "type": "examen",
+      "time": "Durante la sesión"
+    },
+    {
+      "id": "ES2026-11-13Evaluación escrita",
+      "date": "2026-11-13",
+      "course": "ES",
+      "title": "Evaluación escrita",
+      "type": "examen",
+      "time": "Durante la sesión"
+    },
+    {
+      "id": "ES2026-11-13Resultados del simulador",
+      "date": "2026-11-13",
+      "course": "ES",
+      "title": "Resultados del simulador",
+      "type": "entrega",
+      "time": "Durante la sesión"
+    },
+    {
+      "id": "ES2026-11-13Trabajo integrador final",
+      "date": "2026-11-13",
+      "course": "ES",
+      "title": "Trabajo integrador final",
+      "type": "entrega",
+      "time": "Durante la sesión"
+    },
+    {
+      "id": "ES2026-10-02Avance integrador 1",
+      "date": "2026-10-02",
+      "course": "ES",
+      "title": "Avance integrador 1",
+      "type": "entrega",
+      "time": "Durante la sesión"
+    },
+    {
+      "id": "ES2026-10-16Avance integrador 2",
+      "date": "2026-10-16",
+      "course": "ES",
+      "title": "Avance integrador 2",
+      "type": "entrega",
+      "time": "Durante la sesión"
+    }
+  ],
+  "birthdays": [],
+  "missingBirthdays": []
+}
