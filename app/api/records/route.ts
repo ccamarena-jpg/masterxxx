@@ -1,6 +1,26 @@
-import { storage } from "@/lib/storage";
-import { z } from "zod";
-export const dynamic="force-dynamic";
-const schema=z.object({id:z.string().max(100).optional(),title:z.string().trim().min(1).max(160),course:z.enum(['ES','DEC','GV','DEX','KAM','EC','MA','BIAD']),date:z.string().regex(/^\d{4}-\d{2}-\d{2}$/),type:z.enum(['entrega','examen','clase']),time:z.string().max(60),team:z.string().max(120),owner:z.string().max(120),case:z.string().max(200),status:z.enum(['Pendiente','En progreso','Completado']),url:z.string().max(2000).refine(v=>!v||/^https?:\/\//.test(v)),notes:z.string().max(3000)});
-export async function GET(){try{const r=await storage().prepare("SELECT payload FROM records ORDER BY id").all();return Response.json({records:r.results.map((x:any)=>JSON.parse(x.payload))},{headers:{'Cache-Control':'no-store'}});}catch(e){return Response.json({error:'No se pudo cargar el registro. Intenta de nuevo.'},{status:503});}}
-export async function POST(req:Request){if(req.headers.get('origin')!==new URL(req.url).origin)return Response.json({error:'Solicitud no permitida'},{status:403});try{const record=schema.parse(await req.json());record.id=record.id||crypto.randomUUID();await storage().prepare("INSERT INTO records(id,payload) VALUES(?,?) ON CONFLICT(id) DO UPDATE SET payload=excluded.payload").bind(record.id,JSON.stringify(record)).run();return Response.json({record});}catch(e){return Response.json({error:e instanceof z.ZodError?'Revisa los campos del formulario.':'No se pudo guardar. Tus datos siguen en el formulario.'},{status:400});}}
+// Keep Cloudflare D1 behind the existing Campus API as the shared source of truth.
+export const dynamic = 'force-dynamic';
+export const runtime = 'nodejs';
+const origin = 'https://mdmgc30-campus.claudia-camarena-vel.chatgpt.site';
+const headers = { 'Cache-Control': 'no-store' };
+async function forward(method: 'GET' | 'POST', body?: string) {
+  try {
+    const upstream = await fetch(`${origin}/api/records`, {
+      method, cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(15000),
+      headers: { Accept: 'application/json', ...(method === 'POST' ? { 'Content-Type': 'application/json', Origin: origin } : {}) },
+      ...(body === undefined ? {} : { body }),
+    });
+    return Response.json(await upstream.json(), { status: upstream.status, headers });
+  } catch {
+    return Response.json({ error: 'No se pudo conectar con el registro compartido. Intenta nuevamente.' }, { status: 503, headers });
+  }
+}
+export async function GET() { return forward('GET'); }
+export async function POST(req: Request) {
+  if (req.headers.get('origin') !== new URL(req.url).origin) return Response.json({ error: 'Solicitud no permitida' }, { status: 403, headers });
+  if (req.headers.get('content-type')?.split(';')[0].trim() !== 'application/json') return Response.json({ error: 'Formato no permitido' }, { status: 415, headers });
+  const body = await req.text();
+  if (Buffer.byteLength(body) > 30000) return Response.json({ error: 'El registro es demasiado grande' }, { status: 413, headers });
+  try { JSON.parse(body); } catch { return Response.json({ error: 'Registro inválido' }, { status: 400, headers }); }
+  return forward('POST', body);
+}

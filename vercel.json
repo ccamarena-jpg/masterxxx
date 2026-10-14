@@ -1,0 +1,11 @@
+{
+  "framework": "nextjs",
+  "buildCommand": "pnpm run build",
+  "outputDirectory": null,
+  "rewrites": [
+    {
+      "source": "/silabos/:path*",
+      "destination": "https://mdmgc30-campus.claudia-camarena-vel.chatgpt.site/silabos/:path*"
+    }
+  ]
+}

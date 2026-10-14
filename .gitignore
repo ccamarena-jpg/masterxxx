@@ -44,3 +44,10 @@ next-env.d.ts
 /.codex/
 /outputs/
 /work/
+
+# Keep private documents and runtime data out of public source.
+*.pdf
+*.PDF
+*.tsbuildinfo
+*.sqlite*
+*.db

@@ -1,19 +1,26 @@
-# MDMGC30 Campus
+# MDMGC30 · Campus
 
-Plataforma informativa y colaborativa de la promoción 30: calendario, cursos y sílabos, casos y tareas compartidos.
+Frontend Next.js para el proyecto existente `masterup` en Vercel. Conserva los componentes y estilos del Campus original.
 
 ## Desarrollo
 
-Requiere Node.js 22.13 o superior. Ejecuta `pnpm install`, `pnpm dev` y `pnpm build`.
+Node.js 22.13 o posterior y pnpm 11.25.0.
 
-React y Vinext con Cloudflare Workers. Los registros compartidos usan D1, binding `DB`. Migraciones en `drizzle/`.
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm build
+pnpm start
+```
 
-## Datos y documentos
+`vercel.json` selecciona Next.js y `pnpm run build`, sin directorio de salida estático. En el proyecto existente masterup, usar el preset Next.js y quitar cualquier override antiguo de salida o compilación de Vinext.
 
-Los PDF originales y la lista personal de cumpleaños no se incluyen en este repositorio público. Para una instalación independiente, agrega tus propios documentos en `public/silabos/` y los cumpleaños autorizados en `lib/data.json`. La publicación actual conserva sus documentos y datos.
+## Registros compartidos
 
-## Sitio activo
+`app/api/records/route.ts` reenvía GET y POST a https://mdmgc30-campus.claudia-camarena-vel.chatgpt.site/api/records. Cloudflare D1 permanece en Sites como única fuente compartida. Vercel no necesita credenciales D1 ni conserva copias locales. El proxy mantiene las respuestas de validación, desactiva la caché y rechaza escrituras desde otros orígenes.
 
-https://mdmgc30-campus.claudia-camarena-vel.chatgpt.site
+Los enlaces `/silabos/` se resuelven mediante una reescritura a la publicación original. Los PDF y datos personales de cumpleaños no se distribuyen en el código ni en el ZIP. Las listas de cumpleaños del frontend público están vacías.
 
-Este repositorio conserva el código fuente. La publicación y la base de datos siguen administradas por Sites.
+El servicio depende de la disponibilidad del Campus original. Los archivos históricos de integración Sites no forman parte de la compilación Next.js y no deben usarse para desplegar este frontend sobre el backend original.
+
+Producción prevista: https://masterup.vercel.app
