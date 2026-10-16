@@ -5,6 +5,8 @@ import { callScript, scriptConfig } from '@/lib/sheet-server';
 
 const fields = ['id', 'title', 'course', 'date', 'type', 'time', 'team', 'owner', 'case', 'status', 'url', 'notes'] as const;
 const synced = new Set<string>();
+// Reason of the last failed write (Apps Script error text), shown to help diagnose a broken Sheet.
+export let lastMirrorError = '';
 const key = (r: Record<string, unknown>) => JSON.stringify(fields.map(f => r?.[f] ?? ''));
 
 // onlyNew: only add rows missing from the Sheet, never overwrite (used for the legacy shared records).
@@ -22,7 +24,8 @@ export async function mirrorRecords(records: Record<string, unknown>[], onlyNew 
     }, 30000);
     pending.forEach(r => synced.add(key(r)));
     return true;
-  } catch {
+  } catch (e) {
+    lastMirrorError = (e as { detail?: string }).detail || (e instanceof Error ? e.message : '');
     return false;
   }
 }

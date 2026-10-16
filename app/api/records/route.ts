@@ -1,7 +1,7 @@
 // Keep Cloudflare D1 behind the existing Campus API as the shared source of truth,
 // and mirror every record into the Google Sheet (see lib/mirror.ts).
 import { bulletize, isRealDate } from '@/lib/format';
-import { mirrorRecords } from '@/lib/mirror';
+import { lastMirrorError, mirrorRecords } from '@/lib/mirror';
 import { callScript, scriptConfig } from '@/lib/sheet-server';
 import { codeOk } from '@/lib/classcode';
 import data from '@/lib/data.json';
@@ -47,7 +47,7 @@ export async function POST(req: Request) {
     if (!validRecord(record)) return Response.json({ error: 'Revisa los campos del formulario.' }, { status: 400, headers });
     const saved = { ...record, id: typeof record.id === 'string' && record.id ? record.id.slice(0, 80) : crypto.randomUUID() };
     if (await mirrorRecords([saved], false, true)) return Response.json({ record: saved, sheet: true }, { headers });
-    return Response.json({ error: 'No se pudo guardar en el Excel. Intenta nuevamente.' }, { status: 502, headers });
+    return Response.json({ error: 'No se pudo guardar en el Excel. Intenta nuevamente.' + (lastMirrorError ? ' (' + lastMirrorError.slice(0, 160) + ')' : '') }, { status: 502, headers });
   }
   try {
     const { ok, status, json } = await upstreamFetch('POST', JSON.stringify(record));
