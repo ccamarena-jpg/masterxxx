@@ -37,3 +37,5 @@ El Sheet **no se publica ni se comparte**. Un Apps Script ligado al Sheet (corre
 Pestañas esperadas: `Calendario y entregas`, `Cursos` (con `Docente, Correo, Teléfono, Sílabo`) y `Cumpleaños`. Sin estas variables el sitio usa `lib/data.json`.
 
 Calendario para suscribirse: `/api/calendario/ics` (admite `?curso=ES` y `?id=…`). Los cumpleaños nunca se incluyen. Subida de PDF: máximo 4 MB.
+
+Sílabos: desde el detalle de cada curso se sube el PDF (máx. 4 MB); se guarda en Drive y el enlace se escribe solo en la columna `Sílabo` de la pestaña Cursos. Opcional: `SYLLABUS_UPLOAD_CODE` en Vercel exige un código de clase para subir o reemplazar sílabos. En el script, ejecuta una vez `prepararColumnasCursos()` para crear las columnas `Correo` y `Teléfono`.

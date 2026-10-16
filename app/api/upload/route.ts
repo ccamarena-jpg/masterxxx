@@ -1,10 +1,13 @@
-// Stores task PDFs in the class Google Drive folder through the Apps Script web app (files owned by the Sheet's owner).
+// Stores PDFs in the class Google Drive folder through the Apps Script web app (files owned by the Sheet's owner).
+// kind=silabo + course=<ID>: the script also writes the Drive link into the course's "Sílabo" cell.
+// Optional env SYLLABUS_UPLOAD_CODE: when set, replacing a syllabus requires that class code.
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
+import data from '@/lib/data.json';
 import { callScript, scriptConfig } from '@/lib/sheet-server';
 const headers = { 'Cache-Control': 'no-store' };
 const MAX = 4 * 1024 * 1024; // Vercel functions accept bodies up to ~4.5 MB
-const fail = (error: string, status: number) => Response.json({ error }, { status, headers });
+const fail = (error: string, status: number, extra: object = {}) => Response.json({ error, ...extra }, { status, headers });
 
 export async function POST(req: Request) {
   const cfg = scriptConfig();
@@ -16,11 +19,20 @@ export async function POST(req: Request) {
   const file = form.get('file');
   if (!(file instanceof File)) return fail('Falta el archivo', 400);
   if (file.size === 0 || file.size > MAX) return fail('El PDF debe pesar menos de 4 MB. Súbelo a Drive y pega el enlace.', 413);
+
+  const silabo = form.get('kind') === 'silabo';
+  const course = String(form.get('course') ?? '');
+  if (silabo) {
+    if (!data.courses.some(c => c.id === course)) return fail('Curso no válido', 400);
+    const required = process.env.SYLLABUS_UPLOAD_CODE;
+    if (required && form.get('code') !== required) return fail('Código de clase requerido o incorrecto', 401, { needsCode: true });
+  }
+
   const bytes = Buffer.from(await file.arrayBuffer());
   if (bytes.subarray(0, 5).toString('latin1') !== '%PDF-') return fail('Solo se permiten archivos PDF', 415);
   const name = (file.name || 'tarea.pdf').replace(/[^\w .()\-áéíóúñÁÉÍÓÚÑ]/g, '_').slice(0, 120).replace(/(\.pdf)?$/i, '.pdf');
   try {
-    const j = await callScript(cfg, { action: 'upload', name, data: bytes.toString('base64') }, 40000);
+    const j = await callScript(cfg, { action: 'upload', name, data: bytes.toString('base64'), ...(silabo ? { kind: 'silabo', course } : {}) }, 40000);
     if (typeof j.url !== 'string' || !/^https:\/\/(drive|docs)\.google\.com\//.test(j.url)) throw new Error('url');
     return Response.json({ url: j.url, name: j.name ?? name }, { headers });
   } catch {
