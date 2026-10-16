@@ -19,8 +19,13 @@ export async function GET(req: Request) {
   const q = new URL(req.url).searchParams, curso = q.get('curso'), id = q.get('id');
   const sheet = await loadSheetData();
   const records = await sharedRecords();
-  const overridden = new Set(records.map(x => x.id));
-  let events = [...(sheet.events ?? (data.events as SheetEvent[])).filter(x => !overridden.has(x.id)), ...records];
+  // With the Sheet connected it wins over the shared records (edit or hide rows there); otherwise records override the base data.
+  const base = (sheet.events ?? data.events) as SheetEvent[];
+  const baseIds = new Set(base.map(x => x.id));
+  const hidden = new Set(sheet.hidden);
+  const extra = sheet.events ? records.filter(x => !baseIds.has(x.id) && !hidden.has(x.id)) : records;
+  const overridden = new Set(extra.map(x => x.id));
+  let events = [...base.filter(x => !overridden.has(x.id)), ...extra];
   if (curso) events = events.filter(e => e.course === curso);
   if (id) events = events.filter(e => e.id === id);
   events = events.filter(e => /^\d{4}-\d{2}-\d{2}$/.test(e.date));

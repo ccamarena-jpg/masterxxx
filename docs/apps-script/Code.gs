@@ -56,6 +56,54 @@ function prepararColumnasCursos() {
   try { SpreadsheetApp.getUi().alert(msg); } catch (e) { /* sin interfaz: el resultado queda en el registro */ }
 }
 
+var RECORD_COLUMNS = { ID: 'id', Curso: 'course', 'Título': 'title', Fecha: 'date', Grupo: 'team', Responsable: 'owner', Caso: 'case', Estado: 'status', Enlace: 'url', Notas: 'notes', Tipo: 'type', Hora: 'time' };
+var RECORD_TYPES = ['clase', 'examen', 'entrega'];
+
+// Inserta o actualiza filas por ID. Todo se escribe como texto para que Sheets no cree fórmulas ni cambie las fechas.
+function syncRecords_(records) {
+  var sh = SpreadsheetApp.getActive().getSheetByName(TABS.calendar);
+  if (!sh) return 0;
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var v = sh.getDataRange().getValues();
+    var h = v[0];
+    var idCol = h.indexOf('ID');
+    if (idCol < 0) return 0;
+    var activeCol = h.indexOf('Activo');
+    var rowOf = {};
+    var blanks = [];
+    var nextRow = v.length + 1;
+    for (var i = 1; i < v.length; i++) {
+      var id = String(v[i][idCol]);
+      if (id) rowOf[id] = i + 1;
+      else blanks.push(i + 1);
+    }
+    var count = 0;
+    records.slice(0, 50).forEach(function (rec) {
+      var rid = String(rec.id || '').slice(0, 80);
+      if (!rid || RECORD_TYPES.indexOf(rec.type) < 0 || !/^\d{4}-\d{2}-\d{2}$/.test(String(rec.date))) return;
+      var row = rowOf[rid];
+      var isNew = !row;
+      if (isNew) {
+        row = blanks.length ? blanks.shift() : nextRow++;
+        rowOf[rid] = row;
+      }
+      Object.keys(RECORD_COLUMNS).forEach(function (header) {
+        var col = h.indexOf(header);
+        if (col < 0) return;
+        var value = header === 'ID' ? rid : String(rec[RECORD_COLUMNS[header]] || '').slice(0, 2000);
+        sh.getRange(row, col + 1).setNumberFormat('@').setValue(value);
+      });
+      if (isNew && activeCol >= 0) sh.getRange(row, activeCol + 1).setValue(true);
+      count++;
+    });
+    return count;
+  } finally {
+    lock.releaseLock();
+  }
+}
+
 // Fila (1-based) del curso con ese ID en la pestaña Cursos, o 0 si no existe.
 function courseRow_(id) {
   var sh = SpreadsheetApp.getActive().getSheetByName(TABS.courses);
@@ -93,6 +141,11 @@ function doPost(e) {
         courses: rows_(TABS.courses),
         birthdays: props.getProperty('SHOW_BIRTHDAYS') === 'true' ? visibleBirthdays_() : []
       });
+    }
+
+    // Los registros que se cargan en la web se copian a la pestaña "Calendario y entregas" (alta o actualización por ID).
+    if (body.action === 'syncRecords') {
+      return json_({ synced: syncRecords_(body.records || []) });
     }
 
     if (body.action === 'upload') {

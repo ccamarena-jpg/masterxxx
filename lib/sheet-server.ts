@@ -3,9 +3,9 @@
 //   APPS_SCRIPT_URL   -> optional override of the web app URL (a default is set below)
 //   APPS_SCRIPT_TOKEN -> shared secret, same value as the script property TOKEN
 // Fallback (not recommended, needs the tab published): CALENDAR_SHEET_CSV_URL, COURSES_SHEET_CSV_URL, BIRTHDAYS_SHEET_CSV_URL.
-import { mapBirthdays, mapCourses, mapEvents } from '@/lib/sheet';
+import { inactiveEventIds, mapBirthdays, mapCourses, mapEvents } from '@/lib/sheet';
 
-const empty = { events: null, courses: [], birthdays: [] };
+const empty = { events: null, courses: [], birthdays: [], hidden: [] as string[] };
 const googleHost = /(^|\.)(google\.com|googleusercontent\.com)$/;
 
 // The URL alone gives no access: the script rejects any call without the secret token (APPS_SCRIPT_TOKEN, Vercel env only).
@@ -35,7 +35,7 @@ const toCSV = (rows: unknown[][] = []) => rows.map(r => r.map(cell).join(',')).j
 
 async function fromScript(cfg: { url: string; token: string }) {
   const j = await callScript(cfg, { action: 'read' });
-  return { configured: true as const, events: mapEvents(toCSV(j.calendar)), courses: mapCourses(toCSV(j.courses)), birthdays: mapBirthdays(toCSV(j.birthdays)) };
+  return { configured: true as const, events: mapEvents(toCSV(j.calendar)), hidden: inactiveEventIds(toCSV(j.calendar)), courses: mapCourses(toCSV(j.courses)), birthdays: mapBirthdays(toCSV(j.birthdays)) };
 }
 
 // ---- Published-CSV fallback ----
@@ -59,6 +59,7 @@ async function fromPublishedCSV(calendar: string) {
   return {
     configured: true as const,
     events: mapEvents(ev.value),
+    hidden: inactiveEventIds(ev.value),
     courses: co.status === 'fulfilled' ? mapCourses(co.value) : [],
     birthdays: bd.status === 'fulfilled' ? mapBirthdays(bd.value) : [],
   };

@@ -63,6 +63,11 @@ export function mapCourses(csv: string): CourseInfo[] {
   });
 }
 
+// IDs of rows switched off with Activo = FALSE, so a hidden row is not resurrected by the shared records.
+export function inactiveEventIds(csv: string): string[] {
+  return table(csv).flatMap(get => (get('ID') && !truthy(get('Activo')) ? [get('ID')] : []));
+}
+
 export function mapBirthdays(csv: string) {
   return table(csv).flatMap(get => {
     const month = Number(get('Mes')), day = Number(get('Día'));

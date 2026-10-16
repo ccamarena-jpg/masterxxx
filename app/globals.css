@@ -190,3 +190,4 @@ main{padding-top:14px;padding-bottom:14px}.page-title{margin-bottom:10px}.page-t
 .syllabus-upload{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
 .upload-btn{display:inline-flex;align-items:center;gap:7px;cursor:pointer}
 .syllabus-upload input[type=password]{border:1px solid #d7dcea;border-radius:8px;padding:9px 11px;font-size:14px;min-width:0;flex:1}
+.notes p{margin:0 0 8px}.notes-list{margin:0 0 10px;padding-left:20px;list-style:disc}.notes-list li{margin:4px 0;line-height:1.45}
