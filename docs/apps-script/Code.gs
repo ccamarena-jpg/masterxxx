@@ -67,6 +67,12 @@ function prepararColumnasCursos() {
 var RECORD_COLUMNS = { ID: 'id', Curso: 'course', 'Título': 'title', Fecha: 'date', Grupo: 'team', Responsable: 'owner', Caso: 'case', Estado: 'status', Enlace: 'url', Notas: 'notes', Tipo: 'type', Hora: 'time' };
 var RECORD_TYPES = ['clase', 'examen', 'entrega', 'lectura'];
 
+// Escribe un valor en una celda. Si el Excel tiene una validación de datos que lo rechaza (p. ej. una lista de Tipo
+// sin "lectura"), quita la validación solo de esa celda y vuelve a escribir.
+function setCell_(range, value) {
+  try { range.setValue(value); } catch (e) { range.clearDataValidations(); range.setValue(value); }
+}
+
 // Fecha real YYYY-MM-DD (rechaza 2026-13-40 y también 2026-02-31).
 function isRealDate_(s) {
   if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
@@ -110,9 +116,9 @@ function syncRecords_(records, onlyNew, reactivate) {
         var col = h.indexOf(header);
         if (col < 0) return;
         var value = header === 'ID' ? rid : String(rec[RECORD_COLUMNS[header]] || '').slice(0, 2000);
-        sh.getRange(row, col + 1).setNumberFormat('@').setValue(value);
+        setCell_(sh.getRange(row, col + 1).setNumberFormat('@'), value);
       });
-      if ((isNew || reactivate) && activeCol >= 0) sh.getRange(row, activeCol + 1).setValue(true);
+      if ((isNew || reactivate) && activeCol >= 0) setCell_(sh.getRange(row, activeCol + 1), true);
       count++;
     });
     return count;
@@ -184,7 +190,7 @@ function setSyllabusCell_(row, url) {
   var h = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
   var col = h.indexOf('Sílabo') + 1;
   if (!col) { col = h.length + 1; sh.getRange(1, col).setValue('Sílabo').setFontWeight('bold'); }
-  sh.getRange(row, col).setValue(url);
+  setCell_(sh.getRange(row, col), url);
 }
 
 // ---- Eliminar actividades y aplicar sílabos ----
@@ -211,7 +217,7 @@ function deleteRecord_(id) {
     for (var i = 1; i < c.v.length; i++) {
       if (String(c.v[i][idCol]) !== id) continue;
       if (DELETABLE_TYPES.indexOf(String(c.v[i][typeCol]).toLowerCase()) < 0) return 'tipo-no-permitido';
-      c.sh.getRange(i + 1, activeCol + 1).setValue(false);
+      setCell_(c.sh.getRange(i + 1, activeCol + 1), false);
       return 'ok';
     }
     return 'no-encontrado';
@@ -232,7 +238,7 @@ function courseColumn_(sh, name) {
 
 function setCourseText_(sh, row, name, value) {
   if (value === undefined || value === null || value === '') return;
-  sh.getRange(row, courseColumn_(sh, name)).setNumberFormat('@').setValue(String(value).slice(0, 4000));
+  setCell_(sh.getRange(row, courseColumn_(sh, name)).setNumberFormat('@'), String(value).slice(0, 4000));
 }
 
 /**
@@ -265,7 +271,7 @@ function applySyllabus_(course, info, events) {
         if (!id || UUID_ID.test(id) || keep[id]) continue; // lo creado a mano desde la web y lo que el sílabo vuelve a crear no se toca
         if (String(c.v[i][courseCol]) !== course) continue;
         if (DELETABLE_TYPES.indexOf(String(c.v[i][typeCol]).toLowerCase()) < 0) continue;
-        c.sh.getRange(i + 1, activeCol + 1).setValue(false);
+        setCell_(c.sh.getRange(i + 1, activeCol + 1), false);
         deactivated++;
       }
     }

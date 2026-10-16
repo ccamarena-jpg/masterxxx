@@ -26,7 +26,7 @@ export async function callScript(cfg: { url: string; token: string }, payload: o
   });
   if (!googleHost.test(new URL(r.url).hostname)) throw new Error('Destino no permitido');
   const j: any = await r.json().catch(() => { throw new Error('respuesta-no-json'); });
-  if (!r.ok || j.error) { if (j?.detail) console.error('Apps Script:', j.detail); throw new Error(j?.error || 'Apps Script no accesible'); }
+  if (!r.ok || j.error) { if (j?.detail) console.error('Apps Script:', j.detail); throw Object.assign(new Error(j?.error || 'Apps Script no accesible'), { detail: typeof j?.detail === 'string' ? j.detail.slice(0, 200) : '' }); }
   return j;
 }
 
