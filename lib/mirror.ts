@@ -7,14 +7,17 @@ const fields = ['id', 'title', 'course', 'date', 'type', 'time', 'team', 'owner'
 const synced = new Set<string>();
 const key = (r: Record<string, unknown>) => JSON.stringify(fields.map(f => r?.[f] ?? ''));
 
-export async function mirrorRecords(records: Record<string, unknown>[]) {
+// onlyNew: only add rows missing from the Sheet, never overwrite (used for the legacy shared records).
+// force: explicit user save, always written (the cache only avoids resending unchanged legacy records).
+export async function mirrorRecords(records: Record<string, unknown>[], onlyNew = false, force = false) {
   const cfg = scriptConfig();
   if (!cfg) return true;
-  const pending = records.filter(r => r && typeof r.id === 'string' && !synced.has(key(r))).slice(0, 50);
+  const pending = records.filter(r => r && typeof r.id === 'string' && (force || !synced.has(key(r)))).slice(0, 50);
   if (!pending.length) return true;
   try {
     await callScript(cfg, {
       action: 'syncRecords',
+      onlyNew,
       records: pending.map(r => Object.fromEntries(fields.map(f => [f, (f === 'notes' ? bulletize(String(r[f] ?? '')) : String(r[f] ?? '')).slice(0, 2000)]))),
     }, 30000);
     pending.forEach(r => synced.add(key(r)));

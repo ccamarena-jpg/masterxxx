@@ -68,7 +68,8 @@ var RECORD_COLUMNS = { ID: 'id', Curso: 'course', 'Título': 'title', Fecha: 'da
 var RECORD_TYPES = ['clase', 'examen', 'entrega', 'lectura'];
 
 // Inserta o actualiza filas por ID. Todo se escribe como texto para que Sheets no cree fórmulas ni cambie las fechas.
-function syncRecords_(records) {
+// onlyNew = true: solo añade filas que no existen (copia de la base antigua); nunca pisa lo ya guardado en el Excel.
+function syncRecords_(records, onlyNew) {
   var sh = SpreadsheetApp.getActive().getSheetByName(TABS.calendar);
   if (!sh) return 0;
   var lock = LockService.getScriptLock();
@@ -92,6 +93,7 @@ function syncRecords_(records) {
       var rid = String(rec.id || '').slice(0, 80);
       if (!rid || RECORD_TYPES.indexOf(rec.type) < 0 || !/^\d{4}-\d{2}-\d{2}$/.test(String(rec.date))) return;
       var row = rowOf[rid];
+      if (row && onlyNew) return;
       var isNew = !row;
       if (isNew) {
         row = blanks.length ? blanks.shift() : nextRow++;
@@ -286,7 +288,7 @@ function doPost(e) {
 
     // Los registros que se cargan en la web se copian a la pestaña "Calendario y entregas" (alta o actualización por ID).
     if (body.action === 'syncRecords') {
-      return json_({ synced: syncRecords_(body.records || []) });
+      return json_({ synced: syncRecords_(body.records || [], body.onlyNew === true) });
     }
 
     if (body.action === 'deleteRecord') {
