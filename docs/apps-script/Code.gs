@@ -10,6 +10,14 @@
 var TABS = { calendar: 'Calendario y entregas', courses: 'Cursos', birthdays: 'Cumpleaños' };
 var MAX_BYTES = 4 * 1024 * 1024;
 
+// Alternativa a la propiedad FOLDER_ID: pega aquí el id de la carpeta de Drive SOLO en tu copia del script
+// (no lo subas al repositorio). Si la propiedad FOLDER_ID existe, tiene prioridad.
+var FOLDER_ID_FALLBACK = '';
+
+function folderId_() {
+  return PropertiesService.getScriptProperties().getProperty('FOLDER_ID') || FOLDER_ID_FALLBACK;
+}
+
 function json_(o) {
   return ContentService.createTextOutput(JSON.stringify(o)).setMimeType(ContentService.MimeType.JSON);
 }
@@ -109,8 +117,8 @@ function syncRecords_(records) {
  * Si falla, el mensaje dice qué falta (propiedad FOLDER_ID o carpeta inexistente).
  */
 function autorizarDrive() {
-  var folderId = PropertiesService.getScriptProperties().getProperty('FOLDER_ID');
-  if (!folderId) throw new Error('Falta la propiedad FOLDER_ID (id de la carpeta de Drive)');
+  var folderId = folderId_();
+  if (!folderId) throw new Error('Falta el id de la carpeta de Drive: crea la propiedad FOLDER_ID o pégalo en FOLDER_ID_FALLBACK');
   var folder = DriveApp.getFolderById(folderId);
   var msg = 'Drive autorizado. Carpeta de destino: ' + folder.getName();
   Logger.log(msg);
@@ -152,7 +160,7 @@ function doPost(e) {
       return json_({
         calendar: rows_(TABS.calendar),
         courses: rows_(TABS.courses),
-        birthdays: props.getProperty('SHOW_BIRTHDAYS') === 'true' ? visibleBirthdays_() : []
+        birthdays: String(props.getProperty('SHOW_BIRTHDAYS')).toLowerCase() === 'true' ? visibleBirthdays_() : []
       });
     }
 
@@ -162,7 +170,7 @@ function doPost(e) {
     }
 
     if (body.action === 'upload') {
-      var folderId = props.getProperty('FOLDER_ID');
+      var folderId = folderId_();
       if (!folderId) return json_({ error: 'Falta FOLDER_ID' });
       var bytes = Utilities.base64Decode(String(body.data || ''));
       if (!bytes.length || bytes.length > MAX_BYTES) return json_({ error: 'Tamaño no permitido' });

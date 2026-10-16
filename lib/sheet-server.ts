@@ -25,7 +25,7 @@ export async function callScript(cfg: { url: string; token: string }, payload: o
     body: JSON.stringify({ ...payload, token: cfg.token }),
   });
   if (!googleHost.test(new URL(r.url).hostname)) throw new Error('Destino no permitido');
-  const j: any = await r.json();
+  const j: any = await r.json().catch(() => { throw new Error('respuesta-no-json'); });
   if (!r.ok || j.error) { if (j?.detail) console.error('Apps Script:', j.detail); throw new Error(j?.error || 'Apps Script no accesible'); }
   return j;
 }
@@ -71,6 +71,11 @@ export async function loadSheetData() {
   try {
     if (cfg) return await fromScript(cfg);
     if (allowed(csv)) return await fromPublishedCSV(csv!);
-  } catch { return failed; }
+  } catch (e) {
+    // Non-sensitive hint so a failing connection can be diagnosed from outside.
+    const m = e instanceof Error ? e.message : '';
+    const reason = m === 'No autorizado' ? 'token-distinto-al-del-script' : m === 'Error en el script' ? 'error-dentro-del-script' : m === 'respuesta-no-json' ? 'script-devolvio-html-o-pide-permisos' : e instanceof Error && e.name === 'TimeoutError' ? 'timeout' : 'otro';
+    return { ...failed, reason };
+  }
   return { configured: false as const, ...empty };
 }
