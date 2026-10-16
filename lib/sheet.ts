@@ -1,4 +1,5 @@
-// Minimal CSV parsing and row mapping for the Campus Google Sheet (published as CSV).
+// Minimal CSV parsing and row mapping for the Campus Google Sheet.
+import { isRealDate } from '@/lib/format';
 export function parseCSV(text: string): string[][] {
   const rows: string[][] = [];
   let row: string[] = [], cell = '', quoted = false;
@@ -37,7 +38,7 @@ const types = ['clase', 'cumple', 'examen', 'entrega', 'lectura'];
 export function mapEvents(csv: string): SheetEvent[] {
   return table(csv).flatMap(get => {
     const date = get('Fecha'), type = norm(get('Tipo')), id = get('ID');
-    if (!id || !/^\d{4}-\d{2}-\d{2}$/.test(date) || !types.includes(type) || !truthy(get('Activo'))) return [];
+    if (!id || !isRealDate(date) || !types.includes(type) || !truthy(get('Activo'))) return [];
     const url = get('Enlace');
     return [{
       id, date, type, course: get('Curso'), title: get('Título'), time: get('Hora'),
