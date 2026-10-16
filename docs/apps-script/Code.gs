@@ -178,6 +178,93 @@ function setSyllabusCell_(row, url) {
   sh.getRange(row, col).setValue(url);
 }
 
+// ---- Eliminar actividades y aplicar sílabos ----
+var DELETABLE_TYPES = ['entrega', 'examen', 'lectura'];
+var UUID_ID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+// Devuelve la hoja del calendario con sus cabeceras y una función para localizar columnas.
+function calendarSheet_() {
+  var sh = SpreadsheetApp.getActive().getSheetByName(TABS.calendar);
+  if (!sh) throw new Error('No existe la pestaña ' + TABS.calendar);
+  var v = sh.getDataRange().getValues();
+  var h = v[0];
+  return { sh: sh, v: v, h: h, col: function (n) { return h.indexOf(n); } };
+}
+
+// "Elimina" una actividad: pone Activo = FALSE (recuperable desde el Excel). Solo entregas, evaluaciones y lecturas.
+function deleteRecord_(id) {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var c = calendarSheet_();
+    var idCol = c.col('ID'), typeCol = c.col('Tipo'), activeCol = c.col('Activo');
+    if (idCol < 0 || typeCol < 0 || activeCol < 0) throw new Error('Faltan columnas ID, Tipo o Activo');
+    for (var i = 1; i < c.v.length; i++) {
+      if (String(c.v[i][idCol]) !== id) continue;
+      if (DELETABLE_TYPES.indexOf(String(c.v[i][typeCol]).toLowerCase()) < 0) return 'tipo-no-permitido';
+      c.sh.getRange(i + 1, activeCol + 1).setValue(false);
+      return 'ok';
+    }
+    return 'no-encontrado';
+  } finally {
+    lock.releaseLock();
+  }
+}
+
+// Columna de la pestaña Cursos por nombre; la crea al final si no existe.
+function courseColumn_(sh, name) {
+  var h = sh.getRange(1, 1, 1, sh.getLastColumn()).getValues()[0];
+  var i = h.indexOf(name);
+  if (i >= 0) return i + 1;
+  var col = h.length + 1;
+  sh.getRange(1, col).setValue(name).setFontWeight('bold');
+  return col;
+}
+
+function setCourseText_(sh, row, name, value) {
+  if (value === undefined || value === null || value === '') return;
+  sh.getRange(row, courseColumn_(sh, name)).setNumberFormat('@').setValue(String(value).slice(0, 4000));
+}
+
+/**
+ * Aplica la información leída de un sílabo: actualiza la fila del curso (Resumen, Evaluación, Horas, Docente,
+ * Sesiones, Casos) y reemplaza las actividades precargadas (entregas, evaluaciones y lecturas con ID que no
+ * sea de la web) por las del sílabo. Lo desactivado queda con Activo = FALSE, no se borra.
+ */
+function applySyllabus_(course, info, events) {
+  var row = courseRow_(course);
+  if (!row) throw new Error('Curso no encontrado en la pestaña Cursos');
+  var cs = SpreadsheetApp.getActive().getSheetByName(TABS.courses);
+  setCourseText_(cs, row, 'Resumen', info.summary);
+  setCourseText_(cs, row, 'Evaluación', info.evaluation);
+  setCourseText_(cs, row, 'Horas', info.hours);
+  setCourseText_(cs, row, 'Docente', info.professor);
+  setCourseText_(cs, row, 'Sesiones', (info.sessions || []).join('\n'));
+  setCourseText_(cs, row, 'Casos', (info.cases || []).join('\n'));
+
+  var deactivated = 0;
+  var lock = LockService.getScriptLock();
+  lock.waitLock(20000);
+  try {
+    var c = calendarSheet_();
+    var idCol = c.col('ID'), courseCol = c.col('Curso'), typeCol = c.col('Tipo'), activeCol = c.col('Activo');
+    if (idCol >= 0 && courseCol >= 0 && typeCol >= 0 && activeCol >= 0) {
+      for (var i = 1; i < c.v.length; i++) {
+        var id = String(c.v[i][idCol]);
+        if (!id || UUID_ID.test(id)) continue; // lo creado a mano desde la web no se toca
+        if (String(c.v[i][courseCol]) !== course) continue;
+        if (DELETABLE_TYPES.indexOf(String(c.v[i][typeCol]).toLowerCase()) < 0) continue;
+        c.sh.getRange(i + 1, activeCol + 1).setValue(false);
+        deactivated++;
+      }
+    }
+  } finally {
+    lock.releaseLock();
+  }
+  var added = syncRecords_(events || []);
+  return { deactivated: deactivated, added: added };
+}
+
 function doGet() {
   return json_({ ok: true, service: 'campus-mdmgc30' });
 }
@@ -200,6 +287,14 @@ function doPost(e) {
     // Los registros que se cargan en la web se copian a la pestaña "Calendario y entregas" (alta o actualización por ID).
     if (body.action === 'syncRecords') {
       return json_({ synced: syncRecords_(body.records || []) });
+    }
+
+    if (body.action === 'deleteRecord') {
+      return json_({ result: deleteRecord_(String(body.id || '').slice(0, 80)) });
+    }
+
+    if (body.action === 'applySyllabus') {
+      return json_(applySyllabus_(String(body.course || ''), body.info || {}, (body.events || []).slice(0, 50)));
     }
 
     if (body.action === 'upload') {

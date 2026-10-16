@@ -39,3 +39,10 @@ Pestañas esperadas: `Calendario y entregas`, `Cursos` (con `Docente, Correo, Te
 Calendario para suscribirse: `/api/calendario/ics` (admite `?curso=ES` y `?id=…`). Los cumpleaños nunca se incluyen. Subida de PDF: máximo 4 MB.
 
 Sílabos: desde el detalle de cada curso se sube el PDF (máx. 4 MB); se guarda en Drive y el enlace se escribe solo en la columna `Sílabo` de la pestaña Cursos. Opcional: `SYLLABUS_UPLOAD_CODE` en Vercel exige un código de clase para subir o reemplazar sílabos. En el script, ejecuta una vez `prepararColumnasCursos()` para crear las columnas `Correo` y `Teléfono`.
+
+## Actividades y sílabos
+
+- **Eliminar actividades:** el detalle de una entrega, evaluación o lectura tiene el botón "Eliminar actividad". Pone `Activo = FALSE` en el Excel (recuperable); las clases y los cumpleaños no se pueden eliminar. Funciona también con lo precargado de los sílabos.
+- **Sílabo → información del curso:** al subir el PDF de un sílabo (detalle del curso) se guarda en Drive y se lee con Claude para actualizar Resumen, Evaluación, Horas, Docente, Sesiones y Casos del curso, y para reemplazar sus lecturas, evaluaciones y entregas precargadas por las del sílabo. Lo creado a mano desde la web (ID tipo UUID) no se toca.
+- Variables en Vercel: `ANTHROPIC_API_KEY` (necesaria para leer sílabos; `ANTHROPIC_MODEL` opcional) y `CLASS_CODE` (opcional: exige un código para reemplazar sílabos y eliminar actividades).
+- Apps Script: pega el `Code.gs` nuevo y crea una **Nueva versión** de la implementación.
