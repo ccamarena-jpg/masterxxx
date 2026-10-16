@@ -28,7 +28,7 @@ async function upstreamFetch(method: 'GET' | 'POST', body?: string) {
 export async function GET() {
   try {
     const { ok, status, json } = await upstreamFetch('GET');
-    if (ok && Array.isArray(json.records)) await mirrorRecords(json.records);
+    if (ok && Array.isArray(json.records)) await mirrorRecords(json.records, true);
     return Response.json(json, { status, headers });
   } catch { return unavailable(); }
 }
@@ -42,14 +42,15 @@ export async function POST(req: Request) {
   try { record = JSON.parse(body); } catch { return Response.json({ error: 'Registro inválido' }, { status: 400, headers }); }
   if (!record || typeof record !== 'object' || Array.isArray(record)) return Response.json({ error: 'Registro inválido' }, { status: 400, headers });
   if (typeof record.notes === 'string') record.notes = bulletize(record.notes);
+  // With the Sheet connected it is the single source of truth: save there first and never depend on the old API's validation.
+  if (scriptConfig() && validRecord(record)) {
+    const saved = { ...record, id: typeof record.id === 'string' && record.id ? record.id.slice(0, 80) : crypto.randomUUID() };
+    if (await mirrorRecords([saved], false, true)) return Response.json({ record: saved, sheet: true }, { headers });
+    return Response.json({ error: 'No se pudo guardar en el Excel. Intenta nuevamente.' }, { status: 502, headers });
+  }
   try {
     const { ok, status, json } = await upstreamFetch('POST', JSON.stringify(record));
-    if (ok && json.record) { json.sheet = await mirrorRecords([json.record]); return Response.json(json, { status, headers }); }
-    // The shared records API rejected it (older validation, newer types such as "lectura"): the Sheet is the source of truth, so save it there.
-    if (!ok && status === 400 && scriptConfig() && validRecord(record)) {
-      const saved = { ...record, id: typeof record.id === 'string' && record.id ? record.id : crypto.randomUUID() };
-      if (await mirrorRecords([saved])) return Response.json({ record: saved, sheet: true }, { headers });
-    }
+    if (ok && json.record) { json.sheet = await mirrorRecords([json.record], false, true); return Response.json(json, { status, headers }); }
     return Response.json(json, { status, headers });
   } catch { return unavailable(); }
 }
