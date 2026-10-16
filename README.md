@@ -25,15 +25,15 @@ El servicio depende de la disponibilidad del Campus original. Los archivos hist�
 
 Producción prevista: https://masterup.vercel.app
 
-## Integración con Google Sheets y Drive
+## Integración con Google Sheets y Drive (Apps Script)
 
-Variables de entorno en Vercel (proyecto `masterup`). Ninguna URL ni clave va en el repositorio.
+El Sheet **no se publica ni se comparte**. Un Apps Script ligado al Sheet (corre como su dueño) lo lee y guarda los PDF en Drive. La web lo llama desde el servidor con un token secreto.
 
-| Variable | Para qué |
-| --- | --- |
-| `CALENDAR_SHEET_CSV_URL` | Pestaña "Calendario y entregas" publicada como CSV. Sin ella se usa `lib/data.json`. |
-| `COURSES_SHEET_CSV_URL` | Pestaña "Cursos" publicada como CSV. Columnas: `ID, Docente, Correo, Teléfono, Sílabo` (enlace de Drive). |
-| `BIRTHDAYS_SHEET_CSV_URL` | Opcional. Pestaña "Cumpleaños" (`Nombre, Mes, Día, Mostrar en Campus`). |
-| `DRIVE_CLIENT_ID`, `DRIVE_CLIENT_SECRET`, `DRIVE_REFRESH_TOKEN`, `DRIVE_FOLDER_ID` | Subida de PDF de tareas a una carpeta de Drive (límite 4 MB). Sin ellas el formulario pide pegar un enlace. |
+1. En el Sheet: **Extensiones → Apps Script**. Pega [docs/apps-script/Code.gs](docs/apps-script/Code.gs).
+2. **Configuración del proyecto → Propiedades del script**: `TOKEN` (texto largo aleatorio), `FOLDER_ID` (carpeta de Drive para los PDF) y, opcional, `SHOW_BIRTHDAYS=true`.
+3. **Implementar → Nueva implementación → Aplicación web**: ejecutar como **Yo**, acceso **Cualquier persona**. Copia la URL `.../exec`. Sin el token, la URL no devuelve datos.
+4. En Vercel (proyecto `masterup`, Production) crea `APPS_SCRIPT_URL` y `APPS_SCRIPT_TOKEN` (el mismo valor de `TOKEN`) y haz Redeploy.
 
-Calendario para suscribirse: `/api/calendario/ics` (admite `?curso=ES` y `?id=…`). Los cumpleaños nunca se incluyen.
+Pestañas esperadas: `Calendario y entregas`, `Cursos` (con `Docente, Correo, Teléfono, Sílabo`) y `Cumpleaños`. Sin estas variables el sitio usa `lib/data.json`.
+
+Calendario para suscribirse: `/api/calendario/ics` (admite `?curso=ES` y `?id=…`). Los cumpleaños nunca se incluyen. Subida de PDF: máximo 4 MB.
