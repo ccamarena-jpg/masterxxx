@@ -1,0 +1,26 @@
+// Turns free text ("1. a 2. b", numbered lines, dashes) into clean "• item" lines. Idempotent.
+const MARK = /^(?:[•\-*]|\d{1,2}[.)])\s+/;
+
+export function bulletize(text: string | undefined): string {
+  let t = (text ?? '').replace(/\r/g, '').trim();
+  if (!t) return '';
+  // Numbered list written inline: "Construir: 1. a 2. b 3. c"
+  const inline = !t.includes('\n') && /(?:^|\s)1[.)]\s[\s\S]*\s2[.)]\s/.test(t);
+  if (inline) t = t.replace(/\s+(?=\d{1,2}[.)]\s)/g, '\n');
+  let lines = t.split('\n').map(l => l.trim()).filter(Boolean);
+  // Last numbered item that swallowed several sentences becomes one bullet per sentence.
+  if (inline && lines.length > 1 && MARK.test(lines[lines.length - 1])) {
+    const last = lines.pop()!.replace(MARK, '');
+    lines.push(...last.split(/(?<=[.!?])\s+(?=[A-ZÁÉÍÓÚÑ¿¡])/).map((s, i) => (i === 0 ? '1. ' : '- ') + s));
+  }
+  const hasMarker = lines.some(l => MARK.test(l));
+  if (!hasMarker) return lines.join('\n');
+  const out: string[] = [];
+  let started = false;
+  for (const l of lines) {
+    if (MARK.test(l)) { started = true; out.push('• ' + l.replace(MARK, '')); }
+    else if (!started && /:$/.test(l)) out.push(l); // intro line such as "Construir las dos matrices:"
+    else { started = true; out.push('• ' + l); }
+  }
+  return out.join('\n');
+}

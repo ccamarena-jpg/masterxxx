@@ -1,3 +1,4 @@
+import { bulletize } from '@/lib/format';
 import type { SheetEvent } from '@/lib/sheet';
 
 const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
@@ -36,7 +37,7 @@ export function buildICS(events: SheetEvent[], name = 'Campus MDMGC30') {
   for (const e of events) {
     if (e.type === 'cumple') continue;
     const t = timeRange(e.time ?? '');
-    const desc = [kind[e.type] ?? e.type, e.course && 'Curso: ' + e.course, e.time && !t ? e.time : '', e.notes, e.url].filter(Boolean).join('\n');
+    const desc = [kind[e.type] ?? e.type, e.course && 'Curso: ' + e.course, e.time && !t ? e.time : '', bulletize(e.notes), e.url].filter(Boolean).join('\n');
     lines.push('BEGIN:VEVENT', `UID:${e.id.replace(/[^\w.-]/g, '_')}@mdmgc30-campus`, 'DTSTAMP:' + stamp, 'SUMMARY:' + esc((e.course ? `[${e.course}] ` : '') + e.title));
     if (t) lines.push(`DTSTART;TZID=America/Lima:${ymd(e.date)}T${t.start}`, `DTEND;TZID=America/Lima:${ymd(e.date)}T${t.end}`);
     else lines.push(`DTSTART;VALUE=DATE:${ymd(e.date)}`, `DTEND;VALUE=DATE:${nextDay(e.date)}`);
