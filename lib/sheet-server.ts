@@ -1,6 +1,6 @@
 // Server-side access to the Campus Google Sheet through an Apps Script web app bound to the Sheet.
 // The Sheet itself stays private; only the script (running as its owner) reads it. See docs/apps-script/Code.gs.
-//   APPS_SCRIPT_URL   -> web app URL (https://script.google.com/macros/s/.../exec)
+//   APPS_SCRIPT_URL   -> optional override of the web app URL (a default is set below)
 //   APPS_SCRIPT_TOKEN -> shared secret, same value as the script property TOKEN
 // Fallback (not recommended, needs the tab published): CALENDAR_SHEET_CSV_URL, COURSES_SHEET_CSV_URL, BIRTHDAYS_SHEET_CSV_URL.
 import { mapBirthdays, mapCourses, mapEvents } from '@/lib/sheet';
@@ -8,8 +8,11 @@ import { mapBirthdays, mapCourses, mapEvents } from '@/lib/sheet';
 const empty = { events: null, courses: [], birthdays: [] };
 const googleHost = /(^|\.)(google\.com|googleusercontent\.com)$/;
 
+// The URL alone gives no access: the script rejects any call without the secret token (APPS_SCRIPT_TOKEN, Vercel env only).
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz-fUBtXjv0efbek6QdZYH1rmaXYoMwmKVCYyyrWOQqMaqghAhxyYl8cxeOH4uK1y7c/exec';
+
 export const scriptConfig = () => {
-  const { APPS_SCRIPT_URL: url, APPS_SCRIPT_TOKEN: token } = process.env;
+  const url = process.env.APPS_SCRIPT_URL || DEFAULT_SCRIPT_URL, token = process.env.APPS_SCRIPT_TOKEN;
   try { if (url && token && new URL(url).protocol === 'https:' && new URL(url).hostname === 'script.google.com') return { url, token }; } catch { /* invalid URL */ }
   return null;
 };
