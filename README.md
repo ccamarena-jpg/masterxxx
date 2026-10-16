@@ -24,3 +24,16 @@ Los enlaces `/silabos/` se resuelven mediante una reescritura a la publicación 
 El servicio depende de la disponibilidad del Campus original. Los archivos históricos de integración Sites no forman parte de la compilación Next.js y no deben usarse para desplegar este frontend sobre el backend original.
 
 Producción prevista: https://masterup.vercel.app
+
+## Integración con Google Sheets y Drive
+
+Variables de entorno en Vercel (proyecto `masterup`). Ninguna URL ni clave va en el repositorio.
+
+| Variable | Para qué |
+| --- | --- |
+| `CALENDAR_SHEET_CSV_URL` | Pestaña "Calendario y entregas" publicada como CSV. Sin ella se usa `lib/data.json`. |
+| `COURSES_SHEET_CSV_URL` | Pestaña "Cursos" publicada como CSV. Columnas: `ID, Docente, Correo, Teléfono, Sílabo` (enlace de Drive). |
+| `BIRTHDAYS_SHEET_CSV_URL` | Opcional. Pestaña "Cumpleaños" (`Nombre, Mes, Día, Mostrar en Campus`). |
+| `DRIVE_CLIENT_ID`, `DRIVE_CLIENT_SECRET`, `DRIVE_REFRESH_TOKEN`, `DRIVE_FOLDER_ID` | Subida de PDF de tareas a una carpeta de Drive (límite 4 MB). Sin ellas el formulario pide pegar un enlace. |
+
+Calendario para suscribirse: `/api/calendario/ics` (admite `?curso=ES` y `?id=…`). Los cumpleaños nunca se incluyen.

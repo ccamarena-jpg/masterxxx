@@ -162,3 +162,28 @@ main{padding-top:24px;padding-bottom:24px}.topbar{height:64px}.page-title{margin
 .menu-toggle{display:inline-flex;align-items:center;gap:7px;padding:8px 10px;border:1px solid #e2e7f0;border-radius:7px;font-size:12px;color:#404c70;background:#f7f9ff;white-space:nowrap}.menu-toggle:hover{background:#eaf0ff}@media(max-width:700px){.menu-toggle span{display:none}}
 /* Smaller navigation with click-to-close behavior */
 .campus-sidebar .brand{width:100%;text-align:left;font-size:21px;padding:16px 10px 20px;gap:9px}.campus-sidebar .brand-icon{padding:8px;border-radius:10px}.campus-sidebar .brand-name>span{font-size:11px;letter-spacing:2px}.campus-sidebar .nav-label{padding:0 20px 12px;font-size:11px}.campus-sidebar [data-slot=sidebar-menu]{padding:0 12px;gap:6px}.campus-sidebar [data-slot=sidebar-menu-button]{height:39px;padding:0 12px;font-size:14px}.campus-sidebar .cycle{margin:24px 18px;padding:14px}.campus-sidebar .cycle h3{font-size:16px}.campus-sidebar .cycle p{font-size:11px}.campus-sidebar .school{gap:9px;padding:9px;font-size:25px}.campus-sidebar .school span{font-size:11px}.campus-sidebar .school small{font-size:10px}.campus-sidebar .zone{font-size:11px;padding:4px 10px 12px}.menu-toggle{padding:8px}
+/* Add to calendar, teacher contact, PDF upload */
+.title-actions{display:flex;gap:10px;flex-wrap:wrap;justify-content:flex-end}
+.cal-actions{display:flex;gap:10px;flex-wrap:wrap;margin:12px 0}.cal-actions.col{flex-direction:column}.cal-actions a{display:inline-flex;align-items:center;justify-content:center;gap:7px;text-decoration:none}
+.syllabus-link{display:inline-flex;align-items:center;gap:7px;margin-bottom:14px;text-decoration:none}
+.course-contact{margin:6px 0 16px}.course-contact a{display:block;margin:4px 0;text-decoration:underline;overflow-wrap:anywhere}
+.record-form input[type=file]{padding:8px}
+/* Whole month visible without page scroll on desktop */
+@media(min-width:1251px) and (min-height:620px){
+.calendar-layout{height:calc(100dvh - 348px);min-height:430px}
+.calendar-panel{display:flex;flex-direction:column;min-height:0;height:100%}
+.calendar-panel .month-grid,.calendar-panel .agenda{flex:1;min-height:0}
+.calendar-panel .agenda{overflow-y:auto}
+.calendar-panel .month-grid{grid-template-rows:auto;grid-auto-rows:minmax(0,1fr)}
+.calendar-panel .day{min-height:0;overflow-y:auto;scrollbar-width:none;padding:3px 4px}
+.calendar-panel .day::-webkit-scrollbar{display:none}
+.calendar-panel .day-number{margin-bottom:1px;padding:1px 5px;font-size:12px}
+.calendar-panel .month-grid .event{min-height:20px;padding:2px 5px;margin-bottom:2px}
+.calendar-panel .weekday{padding:6px 0}
+.calendar-panel .calendar-toolbar{padding:10px 18px}.calendar-panel .filter-row{padding-bottom:8px}.calendar-panel .calendar-foot{padding:6px 18px}
+.right-panel{max-height:100%;overflow-y:auto}
+}
+@media(min-width:1251px) and (min-height:620px) and (max-height:820px){
+main{padding-top:14px;padding-bottom:14px}.page-title{margin-bottom:10px}.page-title>div>p:last-child{display:none}.summary-strip{margin-bottom:10px;padding:8px 20px}
+.calendar-layout{height:calc(100dvh - 276px)}
+}
