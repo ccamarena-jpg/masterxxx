@@ -25,7 +25,13 @@ export async function callScript(cfg: { url: string; token: string }, payload: o
     body: JSON.stringify({ ...payload, token: cfg.token }),
   });
   if (!googleHost.test(new URL(r.url).hostname)) throw new Error('Destino no permitido');
-  const j: any = await r.json().catch(() => { throw new Error('respuesta-no-json'); });
+  const raw = await r.text();
+  let j: any;
+  try { j = JSON.parse(raw); } catch {
+    // Google answered with a web page (authorization needed, quota, platform error): keep a short readable excerpt.
+    const excerpt = raw.replace(/<style[\s\S]*?<\/style>|<script[\s\S]*?<\/script>/gi, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 160);
+    throw Object.assign(new Error('respuesta-no-json'), { detail: excerpt });
+  }
   if (!r.ok || j.error) { if (j?.detail) console.error('Apps Script:', j.detail); throw Object.assign(new Error(j?.error || 'Apps Script no accesible'), { detail: typeof j?.detail === 'string' ? j.detail.slice(0, 200) : '' }); }
   return j;
 }

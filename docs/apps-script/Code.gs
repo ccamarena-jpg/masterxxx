@@ -173,6 +173,24 @@ function cargarLecturas() {
   try { SpreadsheetApp.getUi().alert(msg); } catch (e) { /* sin interfaz */ }
 }
 
+/**
+ * Ejecutar UNA vez a mano si la web dice "respuesta-no-json" al guardar: fuerza que Google pida TODOS los permisos
+ * que usa el script (candado, escritura en el Excel y Drive). Después hay que crear una Nueva versión de la implementación.
+ * La escritura de prueba reescribe la celda A1 de la pestaña del calendario con su mismo valor (no cambia nada).
+ */
+function autorizarTodo() {
+  var lock = LockService.getScriptLock();
+  lock.waitLock(5000);
+  lock.releaseLock();
+  var sh = SpreadsheetApp.getActive().getSheetByName(TABS.calendar);
+  var a1 = sh.getRange(1, 1);
+  a1.setValue(a1.getValue());
+  var folder = DriveApp.getFolderById(folderId_());
+  var msg = 'Permisos OK. Candado, escritura en el Excel y Drive (' + folder.getName() + ').';
+  Logger.log(msg);
+  try { SpreadsheetApp.getUi().alert(msg); } catch (e) { /* sin interfaz */ }
+}
+
 // Fila (1-based) del curso con ese ID en la pestaña Cursos, o 0 si no existe.
 function courseRow_(id) {
   var sh = SpreadsheetApp.getActive().getSheetByName(TABS.courses);
