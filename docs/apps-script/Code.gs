@@ -104,6 +104,19 @@ function syncRecords_(records) {
   }
 }
 
+/**
+ * Ejecutar UNA vez a mano para dar al script permiso sobre Drive y comprobar FOLDER_ID.
+ * Si falla, el mensaje dice qué falta (propiedad FOLDER_ID o carpeta inexistente).
+ */
+function autorizarDrive() {
+  var folderId = PropertiesService.getScriptProperties().getProperty('FOLDER_ID');
+  if (!folderId) throw new Error('Falta la propiedad FOLDER_ID (id de la carpeta de Drive)');
+  var folder = DriveApp.getFolderById(folderId);
+  var msg = 'Drive autorizado. Carpeta de destino: ' + folder.getName();
+  Logger.log(msg);
+  try { SpreadsheetApp.getUi().alert(msg); } catch (e) { /* sin interfaz */ }
+}
+
 // Fila (1-based) del curso con ese ID en la pestaña Cursos, o 0 si no existe.
 function courseRow_(id) {
   var sh = SpreadsheetApp.getActive().getSheetByName(TABS.courses);
@@ -177,6 +190,7 @@ function doPost(e) {
 
     return json_({ error: 'Acción no válida' });
   } catch (err) {
-    return json_({ error: 'Error en el script' });
+    console.error(err);
+    return json_({ error: 'Error en el script', detail: String((err && err.message) || err) });
   }
 }
