@@ -32,7 +32,7 @@ function table(csv: string) {
 }
 
 export type SheetEvent = { id: string; title: string; date: string; course: string; type: string; time: string; team?: string; owner?: string; case?: string; status?: string; url?: string; notes?: string };
-const types = ['clase', 'cumple', 'examen', 'entrega'];
+const types = ['clase', 'cumple', 'examen', 'entrega', 'lectura'];
 
 export function mapEvents(csv: string): SheetEvent[] {
   return table(csv).flatMap(get => {

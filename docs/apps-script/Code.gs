@@ -65,7 +65,7 @@ function prepararColumnasCursos() {
 }
 
 var RECORD_COLUMNS = { ID: 'id', Curso: 'course', 'Título': 'title', Fecha: 'date', Grupo: 'team', Responsable: 'owner', Caso: 'case', Estado: 'status', Enlace: 'url', Notas: 'notes', Tipo: 'type', Hora: 'time' };
-var RECORD_TYPES = ['clase', 'examen', 'entrega'];
+var RECORD_TYPES = ['clase', 'examen', 'entrega', 'lectura'];
 
 // Inserta o actualiza filas por ID. Todo se escribe como texto para que Sheets no cree fórmulas ni cambie las fechas.
 function syncRecords_(records) {
@@ -121,6 +121,39 @@ function autorizarDrive() {
   if (!folderId) throw new Error('Falta el id de la carpeta de Drive: crea la propiedad FOLDER_ID o pégalo en FOLDER_ID_FALLBACK');
   var folder = DriveApp.getFolderById(folderId);
   var msg = 'Drive autorizado. Carpeta de destino: ' + folder.getName();
+  Logger.log(msg);
+  try { SpreadsheetApp.getUi().alert(msg); } catch (e) { /* sin interfaz */ }
+}
+
+/**
+ * Ejecutar UNA vez a mano: añade a "Calendario y entregas" las lecturas obligatorias de los sílabos
+ * (tipo "lectura", en la fecha de la sesión). Se puede repetir sin duplicar: cada lectura tiene un ID fijo.
+ */
+function cargarLecturas() {
+  var L = [
+    ['DEC', '2026-10-01', 'Introduction to Strategy (L1)'],
+    ['DEC', '2026-10-01', 'Industry Analysis (L2)'],
+    ['DEC', '2026-10-03', 'Competitive Advantage (L3)'],
+    ['DEC', '2026-10-29', 'Corporate Strategy (L4)'],
+    ['DEC', '2026-10-29', 'Setting Aspirations: Mission, Vision and Values (L5)'],
+    ['DEC', '2026-11-12', 'Executing Strategy (L6)'],
+    ['GV', '2026-10-03', 'Putting Sales at the Center of Strategy, Cespedes (L1)'],
+    ['GV', '2026-10-03', 'When CEOs Make Sales Calls, Cappon y Senn (L2)'],
+    ['GV', '2026-10-31', 'Selling After the Crisis, Cespedes (L3)'],
+    ['GV', '2026-10-31', 'Motivating Salespeople: What Really Works, Steenburgh y Ahearne (L4)'],
+    ['ES', '2026-10-02', 'Marketing Myopia, Levitt'],
+    ['ES', '2026-10-16', 'Rediscovering Market Segmentation, Yankelovich y Meer'],
+    ['ES', '2026-10-30', 'Are You Undervaluing Your Customers?, Markey'],
+    ['ES', '2026-11-13', 'Personalization at Scale, McKinsey']
+  ];
+  var seen = {};
+  var records = L.map(function (r) {
+    var key = r[0] + '-' + r[1];
+    seen[key] = (seen[key] || 0) + 1;
+    return { id: r[0] + '-LECTURA-' + r[1] + '-' + seen[key], course: r[0], date: r[1], type: 'lectura', title: 'Lectura: ' + r[2], time: 'Para la sesión', status: 'Pendiente', team: '', owner: '', 'case': '', url: '', notes: '' };
+  });
+  var n = syncRecords_(records);
+  var msg = 'Lecturas cargadas o actualizadas: ' + n;
   Logger.log(msg);
   try { SpreadsheetApp.getUi().alert(msg); } catch (e) { /* sin interfaz */ }
 }

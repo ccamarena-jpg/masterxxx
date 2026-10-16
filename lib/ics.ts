@@ -25,7 +25,7 @@ export function timeRange(time: string) {
   return null;
 }
 
-const kind: Record<string, string> = { clase: 'Clase', examen: 'Evaluación', entrega: 'Entrega' };
+const kind: Record<string, string> = { clase: 'Clase', examen: 'Evaluación', entrega: 'Entrega', lectura: 'Lectura' };
 
 export function buildICS(events: SheetEvent[], name = 'Campus MDMGC30') {
   const stamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d+/, '');
