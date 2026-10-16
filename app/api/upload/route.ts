@@ -35,7 +35,14 @@ export async function POST(req: Request) {
     const j = await callScript(cfg, { action: 'upload', name, data: bytes.toString('base64'), ...(silabo ? { kind: 'silabo', course } : {}) }, 40000);
     if (typeof j.url !== 'string' || !/^https:\/\/(drive|docs)\.google\.com\//.test(j.url)) throw new Error('url');
     return Response.json({ url: j.url, name: j.name ?? name }, { headers });
-  } catch {
-    return fail('No se pudo guardar el PDF en Drive. Intenta nuevamente o pega un enlace.', 502);
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : '';
+    const known: Record<string, string> = {
+      'Falta FOLDER_ID': 'Falta configurar la carpeta de Drive (propiedad FOLDER_ID del script).',
+      'Curso no encontrado en la pestaña Cursos': 'El curso no existe en la pestaña Cursos del Excel.',
+      'No autorizado': 'El token de la web no coincide con el del script.',
+      'Error en el script': 'El script de Drive falló: revisa que tenga permiso de Drive y que FOLDER_ID sea correcto (Apps Script → Ejecuciones).',
+    };
+    return fail(known[msg] ?? 'No se pudo guardar el PDF en Drive. Intenta nuevamente o pega un enlace.', 502);
   }
 }
