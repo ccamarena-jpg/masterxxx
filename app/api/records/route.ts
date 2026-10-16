@@ -4,10 +4,16 @@ import { bulletize } from '@/lib/format';
 import { mirrorRecords } from '@/lib/mirror';
 import { callScript, scriptConfig } from '@/lib/sheet-server';
 import { codeOk } from '@/lib/classcode';
+import data from '@/lib/data.json';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 const origin = 'https://mdmgc30-campus.claudia-camarena-vel.chatgpt.site';
 const headers = { 'Cache-Control': 'no-store' };
+const TYPES = ['clase', 'examen', 'entrega', 'lectura'];
+const text = (v: unknown, n: number) => typeof v === 'string' && v.length <= n;
+// Minimal validation for records saved straight to the Sheet (the shared API stays the first choice).
+const validRecord = (r: any) => text(r.title, 160) && r.title.trim() && /^\d{4}-\d{2}-\d{2}$/.test(String(r.date)) && TYPES.includes(r.type)
+  && data.courses.some(c => c.id === r.course) && ['time', 'team', 'owner', 'case', 'status', 'url', 'notes'].every(k => r[k] === undefined || text(r[k], 2000));
 const unavailable = () => Response.json({ error: 'No se pudo conectar con el registro compartido. Intenta nuevamente.' }, { status: 503, headers });
 
 async function upstreamFetch(method: 'GET' | 'POST', body?: string) {
@@ -39,8 +45,8 @@ export async function POST(req: Request) {
   try {
     const { ok, status, json } = await upstreamFetch('POST', JSON.stringify(record));
     if (ok && json.record) { json.sheet = await mirrorRecords([json.record]); return Response.json(json, { status, headers }); }
-    // The shared records API may not know newer types (e.g. "lectura"): keep them in the Sheet only.
-    if (!ok && status === 400 && record.type === 'lectura' && scriptConfig()) {
+    // The shared records API rejected it (older validation, newer types such as "lectura"): the Sheet is the source of truth, so save it there.
+    if (!ok && status === 400 && scriptConfig() && validRecord(record)) {
       const saved = { ...record, id: typeof record.id === 'string' && record.id ? record.id : crypto.randomUUID() };
       if (await mirrorRecords([saved])) return Response.json({ record: saved, sheet: true }, { headers });
     }
