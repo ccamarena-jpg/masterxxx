@@ -78,10 +78,18 @@
       "hours": 12,
       "mode": "Presencial",
       "professor": "Hugo Antonio Rodriguez Barba",
-      "summary": "",
-      "evaluation": "",
-      "sessions": [],
-      "cases": []
+      "summary": "Comprende la metodología Key Account Management y las funciones del Key Account Manager en el entorno B2B, y aplica herramientas para planificar y gestionar clientes estratégicos. Contenido basado en el sílabo de la promoción MDMGC29; por confirmar con el sílabo MDMGC30.",
+      "evaluation": "Controles de avance 40% · Participación y discusión 30% · Trabajo final grupal 30% (según sílabo MDMGC29)",
+      "sessions": [
+        "15 oct · Conceptos básicos: gestión de clientes B2B, etapas y herramientas del KAM",
+        "17 oct · Estructurando KAM: KAM Team, perspectiva del cliente y plan de acción",
+        "31 oct · Ejecutando KAM: estrategias y tácticas, presentación del trabajo final"
+      ],
+      "cases": [
+        "ABB vs. Caterpillar (IMD 335)",
+        "Santa Isabel vs. Procter & Gamble Chile",
+        "Trabajo final de Key Account Management"
+      ]
     },
     {
       "id": "EC",
