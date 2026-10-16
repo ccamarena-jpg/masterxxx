@@ -5,6 +5,7 @@ export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 import data from '@/lib/data.json';
 import { callScript, scriptConfig } from '@/lib/sheet-server';
+import { codeOk } from '@/lib/classcode';
 const headers = { 'Cache-Control': 'no-store' };
 const MAX = 4 * 1024 * 1024; // Vercel functions accept bodies up to ~4.5 MB
 const fail = (error: string, status: number, extra: object = {}) => Response.json({ error, ...extra }, { status, headers });
@@ -24,8 +25,7 @@ export async function POST(req: Request) {
   const course = String(form.get('course') ?? '');
   if (silabo) {
     if (!data.courses.some(c => c.id === course)) return fail('Curso no válido', 400);
-    const required = process.env.SYLLABUS_UPLOAD_CODE;
-    if (required && form.get('code') !== required) return fail('Código de clase requerido o incorrecto', 401, { needsCode: true });
+    if (!codeOk(form.get('code'))) return fail('Código de clase requerido o incorrecto', 401, { needsCode: true });
   }
 
   const bytes = Buffer.from(await file.arrayBuffer());

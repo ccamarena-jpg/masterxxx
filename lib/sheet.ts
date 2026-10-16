@@ -47,18 +47,26 @@ export function mapEvents(csv: string): SheetEvent[] {
   });
 }
 
-export type CourseInfo = { id: string; professor?: string; email?: string; phone?: string; syllabus?: string };
+export type CourseInfo = { id: string; professor?: string; email?: string; phone?: string; syllabus?: string; summary?: string; evaluation?: string; hours?: number; sessions?: string[]; cases?: string[] };
 export function mapCourses(csv: string): CourseInfo[] {
   return table(csv).flatMap(get => {
     const id = get('ID');
     if (!id) return [];
     const email = get('Correo'), phone = get('Teléfono'), syllabus = get('Sílabo'), professor = get('Docente');
+    const summary = get('Resumen'), evaluation = get('Evaluación'), hours = Number(get('Horas'));
+    const lines = (name: string) => get(name).split(/\r?\n/).map(x => x.trim()).filter(Boolean);
+    const sessions = lines('Sesiones'), cases = lines('Casos');
     return [{
       id,
       ...(professor ? { professor } : {}),
       ...(/^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/.test(email) ? { email } : {}),
       ...(/^\+?[\d\s().-]{6,20}$/.test(phone) ? { phone } : {}),
       ...(/^https:\/\//i.test(syllabus) ? { syllabus } : {}),
+      ...(summary ? { summary } : {}),
+      ...(evaluation ? { evaluation } : {}),
+      ...(Number.isFinite(hours) && hours > 0 ? { hours } : {}),
+      ...(sessions.length ? { sessions } : {}),
+      ...(cases.length ? { cases } : {}),
     }];
   });
 }

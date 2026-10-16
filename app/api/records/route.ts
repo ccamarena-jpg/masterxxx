@@ -2,7 +2,8 @@
 // and mirror every record into the Google Sheet (see lib/mirror.ts).
 import { bulletize } from '@/lib/format';
 import { mirrorRecords } from '@/lib/mirror';
-import { scriptConfig } from '@/lib/sheet-server';
+import { callScript, scriptConfig } from '@/lib/sheet-server';
+import { codeOk } from '@/lib/classcode';
 export const dynamic = 'force-dynamic';
 export const runtime = 'nodejs';
 const origin = 'https://mdmgc30-campus.claudia-camarena-vel.chatgpt.site';
@@ -45,4 +46,22 @@ export async function POST(req: Request) {
     }
     return Response.json(json, { status, headers });
   } catch { return unavailable(); }
+}
+
+// "Delete" an activity (entrega, evaluación or lectura): the Sheet row is switched off (Activo = FALSE), so it can be recovered there.
+export async function DELETE(req: Request) {
+  const cfg = scriptConfig();
+  if (!cfg) return Response.json({ error: 'La conexión con el Excel no está configurada.' }, { status: 501, headers });
+  if (req.headers.get('origin') !== new URL(req.url).origin) return Response.json({ error: 'Solicitud no permitida' }, { status: 403, headers });
+  let body: any;
+  try { body = await req.json(); } catch { return Response.json({ error: 'Registro inválido' }, { status: 400, headers }); }
+  const id = typeof body?.id === 'string' ? body.id.slice(0, 80) : '';
+  if (!id) return Response.json({ error: 'Falta el identificador' }, { status: 400, headers });
+  if (!codeOk(body?.code)) return Response.json({ error: 'Código de clase requerido o incorrecto', needsCode: true }, { status: 401, headers });
+  try {
+    const { result } = await callScript(cfg, { action: 'deleteRecord', id });
+    if (result === 'tipo-no-permitido') return Response.json({ error: 'Las clases y los cumpleaños no se pueden eliminar.' }, { status: 403, headers });
+    if (result === 'no-encontrado') return Response.json({ error: 'La actividad todavía no está en el Excel. Recarga e intenta de nuevo.' }, { status: 404, headers });
+    return Response.json({ ok: true }, { headers });
+  } catch { return Response.json({ error: 'No se pudo eliminar la actividad. Intenta nuevamente.' }, { status: 502, headers }); }
 }
