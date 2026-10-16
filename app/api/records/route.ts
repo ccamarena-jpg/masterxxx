@@ -1,6 +1,6 @@
 // Keep Cloudflare D1 behind the existing Campus API as the shared source of truth,
 // and mirror every record into the Google Sheet (see lib/mirror.ts).
-import { bulletize } from '@/lib/format';
+import { bulletize, isRealDate } from '@/lib/format';
 import { mirrorRecords } from '@/lib/mirror';
 import { callScript, scriptConfig } from '@/lib/sheet-server';
 import { codeOk } from '@/lib/classcode';
@@ -12,7 +12,7 @@ const headers = { 'Cache-Control': 'no-store' };
 const TYPES = ['clase', 'examen', 'entrega', 'lectura'];
 const text = (v: unknown, n: number) => typeof v === 'string' && v.length <= n;
 // Minimal validation for records saved straight to the Sheet (the shared API stays the first choice).
-const validRecord = (r: any) => text(r.title, 160) && r.title.trim() && /^\d{4}-\d{2}-\d{2}$/.test(String(r.date)) && TYPES.includes(r.type)
+const validRecord = (r: any) => text(r.title, 160) && r.title.trim() && isRealDate(r.date) && TYPES.includes(r.type)
   && data.courses.some(c => c.id === r.course) && ['time', 'team', 'owner', 'case', 'status', 'url', 'notes'].every(k => r[k] === undefined || text(r[k], 2000));
 const unavailable = () => Response.json({ error: 'No se pudo conectar con el registro compartido. Intenta nuevamente.' }, { status: 503, headers });
 
@@ -43,7 +43,8 @@ export async function POST(req: Request) {
   if (!record || typeof record !== 'object' || Array.isArray(record)) return Response.json({ error: 'Registro inválido' }, { status: 400, headers });
   if (typeof record.notes === 'string') record.notes = bulletize(record.notes);
   // With the Sheet connected it is the single source of truth: save there first and never depend on the old API's validation.
-  if (scriptConfig() && validRecord(record)) {
+  if (scriptConfig()) {
+    if (!validRecord(record)) return Response.json({ error: 'Revisa los campos del formulario.' }, { status: 400, headers });
     const saved = { ...record, id: typeof record.id === 'string' && record.id ? record.id.slice(0, 80) : crypto.randomUUID() };
     if (await mirrorRecords([saved], false, true)) return Response.json({ record: saved, sheet: true }, { headers });
     return Response.json({ error: 'No se pudo guardar en el Excel. Intenta nuevamente.' }, { status: 502, headers });

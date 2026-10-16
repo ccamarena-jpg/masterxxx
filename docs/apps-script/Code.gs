@@ -67,9 +67,16 @@ function prepararColumnasCursos() {
 var RECORD_COLUMNS = { ID: 'id', Curso: 'course', 'Título': 'title', Fecha: 'date', Grupo: 'team', Responsable: 'owner', Caso: 'case', Estado: 'status', Enlace: 'url', Notas: 'notes', Tipo: 'type', Hora: 'time' };
 var RECORD_TYPES = ['clase', 'examen', 'entrega', 'lectura'];
 
+// Fecha real YYYY-MM-DD (rechaza 2026-13-40 y también 2026-02-31).
+function isRealDate_(s) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return false;
+  var d = new Date(s + 'T12:00:00Z');
+  return !isNaN(d.getTime()) && d.toISOString().slice(0, 10) === s;
+}
+
 // Inserta o actualiza filas por ID. Todo se escribe como texto para que Sheets no cree fórmulas ni cambie las fechas.
 // onlyNew = true: solo añade filas que no existen (copia de la base antigua); nunca pisa lo ya guardado en el Excel.
-function syncRecords_(records, onlyNew) {
+function syncRecords_(records, onlyNew, reactivate) {
   var sh = SpreadsheetApp.getActive().getSheetByName(TABS.calendar);
   if (!sh) return 0;
   var lock = LockService.getScriptLock();
@@ -91,7 +98,7 @@ function syncRecords_(records, onlyNew) {
     var count = 0;
     records.slice(0, 50).forEach(function (rec) {
       var rid = String(rec.id || '').slice(0, 80);
-      if (!rid || RECORD_TYPES.indexOf(rec.type) < 0 || !/^\d{4}-\d{2}-\d{2}$/.test(String(rec.date))) return;
+      if (!rid || RECORD_TYPES.indexOf(rec.type) < 0 || !isRealDate_(String(rec.date))) return;
       var row = rowOf[rid];
       if (row && onlyNew) return;
       var isNew = !row;
@@ -105,7 +112,7 @@ function syncRecords_(records, onlyNew) {
         var value = header === 'ID' ? rid : String(rec[RECORD_COLUMNS[header]] || '').slice(0, 2000);
         sh.getRange(row, col + 1).setNumberFormat('@').setValue(value);
       });
-      if (isNew && activeCol >= 0) sh.getRange(row, activeCol + 1).setValue(true);
+      if ((isNew || reactivate) && activeCol >= 0) sh.getRange(row, activeCol + 1).setValue(true);
       count++;
     });
     return count;
@@ -244,6 +251,8 @@ function applySyllabus_(course, info, events) {
   setCourseText_(cs, row, 'Sesiones', (info.sessions || []).join('\n'));
   setCourseText_(cs, row, 'Casos', (info.cases || []).join('\n'));
 
+  var keep = {};
+  (events || []).forEach(function (e) { keep[String(e.id || '')] = true; });
   var deactivated = 0;
   var lock = LockService.getScriptLock();
   lock.waitLock(20000);
@@ -253,7 +262,7 @@ function applySyllabus_(course, info, events) {
     if (idCol >= 0 && courseCol >= 0 && typeCol >= 0 && activeCol >= 0) {
       for (var i = 1; i < c.v.length; i++) {
         var id = String(c.v[i][idCol]);
-        if (!id || UUID_ID.test(id)) continue; // lo creado a mano desde la web no se toca
+        if (!id || UUID_ID.test(id) || keep[id]) continue; // lo creado a mano desde la web y lo que el sílabo vuelve a crear no se toca
         if (String(c.v[i][courseCol]) !== course) continue;
         if (DELETABLE_TYPES.indexOf(String(c.v[i][typeCol]).toLowerCase()) < 0) continue;
         c.sh.getRange(i + 1, activeCol + 1).setValue(false);
@@ -263,7 +272,7 @@ function applySyllabus_(course, info, events) {
   } finally {
     lock.releaseLock();
   }
-  var added = syncRecords_(events || []);
+  var added = syncRecords_(events || [], false, true);
   return { deactivated: deactivated, added: added };
 }
 
