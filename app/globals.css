@@ -208,3 +208,6 @@ main{padding-top:14px;padding-bottom:14px}.page-title{margin-bottom:10px}.page-t
 .delete-row{display:flex;gap:8px;align-items:center;margin:0 0 10px}
 .delete-row input[type=password]{border:1px solid #d7dcea;border-radius:8px;padding:9px 11px;font-size:14px;min-width:0;flex:1}
 .danger{padding:10px 14px;border:1px solid #e3b4b4;border-radius:9px;background:#fff;color:#b13a3a;font-size:14px;font-weight:600;width:100%}.danger:hover{background:#fbeeee}.danger:disabled{opacity:.6}
+
+.detail-dialog{max-height:90dvh;overflow-y:auto;overscroll-behavior:contain}
+.detail-dialog .notes{overflow-wrap:anywhere}
